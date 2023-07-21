@@ -1,25 +1,92 @@
+
+#file name depends   clusterGroupName in values-global.yaml
+
 clusterGroup:
   name: hub
   isHubCluster: true
+  # Note: setting this to true stores the vault unseal keys inside a cluster secret and
+  # is fundamentally insecure
+  #  insecureUnsealVaultInsideCluster: true
 
   namespaces:
-    - open-cluster-management
-    - vault
-    - golang-external-secrets
-    - config-demo
-    - hello-world
+  - open-cluster-management #for ACM
+  - vault
+  - golang-external-secrets
+  - npss-tnc-vms
+  - openshift-local-storage
+  - openshift-storage  
+  - openshift-cnv
+  - quay-enterprise
+  - policies  
+  - service-telemetry
+  - kafka-cluster 
+    #  - openshift-operators-redhat
+    #  - openshift-logging  
+  - prom-kafka-adapter 
+  - edge-gitops-vms
+  - mano-apps
+  - mano-automation
+    #  - openshift-performance-addon-operator
 
   subscriptions:
     acm:
       name: advanced-cluster-management
       namespace: open-cluster-management
-      channel: release-2.7
-      #csv: advanced-cluster-management.v2.6.1
+      channel: release-2.7 
+
+    lso:
+      name: local-storage-operator
+      namespace: openshift-local-storage
+
+    odf:
+      name: odf-operator
+      namespace: openshift-storage  
+
+    cnv:
+      name: kubevirt-hyperconverged
+      namespace: openshift-cnv
+
+    quay:
+      name: quay-operator
+      namespace: quay-enterprise    
+      channel: stable-3.7
+
+    prometheus:
+      name: prometheus
+      namespace: service-telemetry    
+      channel: beta
+      source: community-operators
+ 
+    kafka:
+      name: amq-streams
+      namespace: kafka-cluster 
+   
+    elasticsearch:
+      name: elasticsearch-operator
+      namespace: openshift-operators-redhat
+
+    logging:
+      name: cluster-logging
+      namespace: openshift-logging
+   
+        #    pao:
+        #      name: performance-addon-operator
+        #      namespace: openshift-performance-addon-operator    
+
+    Talam:
+      name: topology-aware-lifecycle-manager
+      namespace: openshift-operators 
+
+#     disable: true
+
+#    kubevirt-hyperconverged:
+#      name: kubevirt-hyperconverged
+#      namespace: openshift-cnv
+#      source: redhat-operators
+#      channel: stable
 
   projects:
-    - hub
-    - config-demo
-    - hello-world
+  - hub
 
   applications:
     acm:
@@ -44,18 +111,55 @@ clusterGroup:
             #      namespace: golang-external-secrets
             #      project: hub
             #      path: common/golang-external-secrets
-
-            #    config-demo:
-            #      name: config-demo
-            #      namespace: config-demo
-            #      project: config-demo
-            #      path: charts/all/config-demo
-
-    hello-world:
-      name: hello-world
-      namespace: hello-world
-      project: hello-world
-      path: charts/all/hello-world
+            #
+            #    cnv:
+            #      name: kubevirt-hyperconverged
+            #      namespace: openshift-cnv
+            #      path: charts/mgt-hub/cnv  
+            #      project: hub
+            #
+            #    odf:
+            #      name: odf
+            #      namespace: openshift-storage
+            #      path: charts/mgt-hub/openshift-data-foundations  
+            #      project: hub
+            #
+            #    quay:
+            #      name: quay
+            #      namespace: quay-enterprise
+            #      path: charts/mgt-hub/quay
+            #      project: hub
+            #
+            #    kafka:
+            #      name: kafka
+            #      namespace: kafka-cluster
+            #      path: charts/mgt-hub/kafka
+            #      project: hub
+            #
+            #    monitoring:
+            #      name: monitoring
+            #      namespace: prom-kafka-adapter
+            #      path: charts/mgt-hub/monitoring
+            #      project: hub  
+            #
+            #    logging:
+            #      name: logging
+            #      namespace: openshift-logging
+            #      path: charts/mgt-hub/logging
+            #      project: hub
+            #  
+            #    edge-gitops-vms:
+            #      name: edge-gitops-vms
+            #      namespace: edge-gitops-vms
+            #      path: charts/mgt-hub/gitops-vms
+            #      project: hub    
+            #
+            #    mc:    
+            #      name: mc
+            #      path: charts/mgt-hub/mc  
+            #        #      namespace: openshift-performance-addon-operator
+            #      project: hub
+            #
 
   imperative:
     # NOTE: We *must* use lists and not hashes. As hashes lose ordering once parsed by helm
@@ -65,9 +169,9 @@ clusterGroup:
     # For additional overrides that apply to the jobs, please refer to
     # https://hybrid-cloud-patterns.io/imperative-actions/#additional-job-customizations
     jobs:
-    - name: hello-world
+    - name: regional-ca
       # ansible playbook to be run
-      playbook: common/ansible/playbooks/hello-world/hello-world.yaml
+      playbook: ansible/playbooks/on-hub-get-regional-ca.yml
       # per playbook timeout in seconds
       timeout: 234
       # verbosity: "-v"
@@ -75,7 +179,7 @@ clusterGroup:
   managedClusterGroups:
     exampleRegion:
       name: group-one
-      acmlabels:
+      labels:
       - name: clusterGroup
         value: group-one
       helmOverrides:
