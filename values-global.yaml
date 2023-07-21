@@ -1,6 +1,6 @@
 ---
 global:
-  pattern: multicloud-gitops
+  pattern: ebc-multicloud-gitops
 
   options:
     useCSV: false
