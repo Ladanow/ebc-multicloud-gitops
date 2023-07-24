@@ -8,6 +8,7 @@ clusterGroup:
   namespaces:
   - open-cluster-management #for ACM
   - hello-world  
+  - openshift-nmstate  
   - vault
   - golang-external-secrets
   - npss-tnc-vms
@@ -34,6 +35,10 @@ clusterGroup:
       name: advanced-cluster-management
       namespace: open-cluster-management
       channel: release-2.7 
+
+    nmstate:
+      name: kubernetes-nmstate-operator
+      namespace: openshift-nmstate  
 
     lso:
       name: local-storage-operator
