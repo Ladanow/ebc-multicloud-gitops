@@ -106,6 +106,12 @@ clusterGroup:
         jsonPointers:
           - /spec/loggingCA
 
+    hello-world:
+      name: hello-world
+      namespace: hello-world
+      project: hello-world
+      path: charts/all/hello-world
+
             #    vault:
             #      name: vault
             #      namespace: vault
