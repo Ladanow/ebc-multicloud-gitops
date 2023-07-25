@@ -1,4 +1,11 @@
 ---
+global:
+  xraylab:
+    namespace: "openshift-local-storage"
+  datacenter:
+    storageClassName: gp2
+    region: us-east-1
+
 
 odf:
   jobTerminationGracePeriod: 300
