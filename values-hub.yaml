@@ -150,6 +150,13 @@ clusterGroup:
             #      namespace: openshift-storage
             #      path: charts/mgt-hub/openshift-data-foundations  
             #      project: hub
+    lso:
+      name: local-storage 
+      namespace: openshift-local-storage
+      path: charts/mgt-hub/lso
+      project: hub  
+
+
             #
             #    quay:
             #      name: quay
