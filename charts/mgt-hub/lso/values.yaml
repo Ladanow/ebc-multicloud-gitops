@@ -73,4 +73,4 @@ rbac:
         name: edit-storageclass
 
 job:
-  image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+  image: registry.redhat.io/openshift4/ose-tools-rhel8:latest 
