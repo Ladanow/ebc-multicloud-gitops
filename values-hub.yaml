@@ -118,6 +118,15 @@ clusterGroup:
       project: hello-world
       path: charts/all/hello-world
 
+    nmstate:
+      name: nmstate-crd
+      namespace: openshift-nmstate
+      path: charts/all/nmstate  
+      project: hub
+
+
+
+
             #    vault:
             #      name: vault
             #      namespace: vault
