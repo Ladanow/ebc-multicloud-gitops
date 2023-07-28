@@ -83,7 +83,7 @@ spec:
   multiCloudGateway:
     reconcileStrategy: manage   # <-- Default value is manage
   storageDeviceSets:
-  - count: 6
+  - count: 9 
     dataPVCTemplate:
       spec:
         accessModes:
