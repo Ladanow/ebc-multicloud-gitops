@@ -71,10 +71,10 @@ clusterGroup:
       name: elasticsearch-operator
       namespace: openshift-operators-redhat
 
-    logging:
-      name: cluster-logging
-      namespace: openshift-logging
-   
+        #    logging:
+        #      name: cluster-logging
+        #      namespace: openshift-logging
+        #   
         #    pao:
         #      name: performance-addon-operator
         #      namespace: openshift-performance-addon-operator    
