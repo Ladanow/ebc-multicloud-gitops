@@ -26,7 +26,7 @@ spec:
   storageClassName: localblock
   volumeMode: Block
     #  fstype: xfs
-  maxDeviceCount: 2  # <-- Maximum number of devices per node to be used
+  maxDeviceCount: 3  # <-- Maximum number of devices per node to be used
   deviceInclusionSpec:
     deviceTypes:
     - disk
