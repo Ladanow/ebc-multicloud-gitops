@@ -4,7 +4,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
   name: job-label-storage-nodes
-  namespace: {{ .Values.odf.namespace }}
+  namespace: {{ .Values.lso.namespace }}
 spec:
   template:
     spec:
@@ -20,4 +20,4 @@ spec:
       restartPolicy: Never
       serviceAccount: {{ .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
-      terminationGracePeriodSeconds: {{ .Values.odf.jobTerminationGracePeriod }}
+      terminationGracePeriodSeconds: {{ .Values.lso.jobTerminationGracePeriod }}

@@ -7,13 +7,13 @@ global:
     region: us-east-1
 
 
-odf:
+lso:
   jobTerminationGracePeriod: 300
   namespace: openshift-local-storage
 
 
 #RoleBasedAccessControl
-serviceAccountName: odf-node-label-sa
+serviceAccountName: lso-node-label-sa
 rbac:
   roles:
     - name: label-storage-nodes
@@ -52,8 +52,8 @@ rbac:
         namespace: ""
       subjects:
         kind: ServiceAccount
-        name: odf-node-label-sa
-        namespace: openshift-storage
+        name: lso-node-label-sa
+        namespace: openshift-local-storage
         apiGroup: ""
       roleRef:
         kind: ClusterRole
@@ -65,8 +65,8 @@ rbac:
         namespace: ""
       subjects:
         kind: ServiceAccount
-        name: odf-node-label-sa
-        namespace: openshift-storage
+        name: lso-node-label-sa
+        namespace: openshift-local-storage
         apiGroup: ""
       roleRef:
         kind: ClusterRole
