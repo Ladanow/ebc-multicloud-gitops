@@ -111,7 +111,9 @@ param:
   
   FEATURE_REPO_MIRROR: true
   REPO_MIRROR_INTERVAL: 30
-  REPO_MIRROR_SERVER_HOSTNAME: quay-registry-quay-quay-enterprise.apps.npss-tnc-4.blueprints.rhecoeng.com
+  REPO_MIRROR_SERVER_HOSTNAME: quay-registry-quay-quay-enterprise.apps.mgmt.npss.bos2.lab
+
+
   REPO_MIRROR_TLS_VERIFY: false
   REPO_MIRROR_ROLLBACK: true
   
