@@ -96,7 +96,8 @@ param:
   BROWSER_API_CALLS_XHR_ONLY: false
   
   # Assign super user privilege to the the following user
-  SUPER_USERS: quay
+  SUPER_USERS:
+  - quay
   
   # restrict user creation to super user group
   #FEATURE_USER_CREATION: false
