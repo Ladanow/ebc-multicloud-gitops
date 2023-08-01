@@ -19,10 +19,10 @@ quay:
       managed: true
     - name: tls
       managed: true
-        #    - name: quay
-        #      managed: true
-        #    - name: clairpostgres
-        #      managed: true
+    - name: quay
+      managed: true
+    - name: clairpostgres
+      managed: true
   configBundleSecret:
     deploy: true
     name: quay-init-config-bundle-secret
@@ -84,7 +84,8 @@ param:
   FEATURE_MAILING: false
   REGISTRY_TITLE: Red Hat Quay
   REGISTRY_TITLE_SHORT: Red Hat Quay
-  TAG_EXPIRATION_OPTIONS: 2w
+  TAG_EXPIRATION_OPTIONS:
+  - 2w
   TEAM_RESYNC_STALE_TIME: 60m
   TESTING: false
   #SERVER_HOSTNAME : quay-registry-quay-quay-enterprise.apps.npss-tnc-4.blueprints.rhecoeng.com 
