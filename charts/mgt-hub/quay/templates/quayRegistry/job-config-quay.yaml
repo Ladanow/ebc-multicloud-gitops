@@ -16,7 +16,7 @@ spec:
         - -c
         - |
           # wait for the operator QuayRegistry CR to be available
-          QUAY_HOSTNAME= quay-registry-quay-quay-enterprise.apps.mgmt.npss.bos2.lab
+          QUAY_HOSTNAME=quay-registry-quay-quay-enterprise.apps.mgmt.npss.bos2.lab
           sleep 5
           QUAYTOKEN=$(curl -X POST -k  https://$QUAY_HOSTNAME/api/v1/user/initialize --header 'Content-Type: application/json' --data '{ "username": "quay", "password":"registry", "email": "quay@quay.com", "access_token": true}' | jq -r '.access_token')
           sleep 5
