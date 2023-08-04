@@ -10,7 +10,7 @@ spec:
   template:
     spec:
       containers:
-      - image: {{ .Values.job.image }}
+      - image: {{ .Values.job.image22 }}
         command:
         - /bin/bash
         - -c
