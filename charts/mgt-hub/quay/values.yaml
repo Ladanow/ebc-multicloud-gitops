@@ -39,7 +39,7 @@ quay:
 
 job:
   image: registry.redhat.io/openshift4/ose-cli:latest
-  image2: quay.io/oahmed/cli-jq:1 
+  image2: quay.io/oahmed/cli-jq:2 
 
 global:
   hub:
