@@ -4,7 +4,7 @@ metadata:
   annotations:
     argocd.argoproj.io/hook: Sync
     argocd.argoproj.io/sync-wave: "30"
-  name: config-quay-repo
+  name: oc-mirror-plugin
   namespace: {{ .Values.quay.namespace }}
 spec:
   template:
@@ -40,7 +40,7 @@ spec:
  
 
 
-        name: config-quay-repo
+        name: oc-mirror-plugin
       dnsPolicy: ClusterFirst
       activeDeadlineSeconds: 900
       restartPolicy: Never
