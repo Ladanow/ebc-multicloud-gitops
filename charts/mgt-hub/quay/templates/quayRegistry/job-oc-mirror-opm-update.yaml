@@ -10,6 +10,14 @@ spec:
   template:
     spec:
       containers:
+      - env:
+        - name: "HTTP_PROXY"
+          value: "http://192.168.32.4:3128"
+          name: "HTTPS_PROXY"
+          value: "http://192.168.32.4:3128"
+          name: "NO_PROXY"
+          value: "mgmt.npss.bos2.lab,10.128.0.0/14,fd02::/48,172.30.0.0/16,fd03::/112,192.168.34.0/25,fd00:1921:6834::/48"  
+
       - image: {{ .Values.job.image2 }}
         command:
         - /bin/bash
