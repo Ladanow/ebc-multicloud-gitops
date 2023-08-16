@@ -34,7 +34,7 @@ kind: Job
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "303"
-  name: testjob
+  name: testjob2
   namespace: app2-2
 spec:
   template:
@@ -46,9 +46,9 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - image: registry.redhat.io/openshift4/ose-tools-rhel8:latest 
-          name: testjob
+          name: testjob2
           command:
             - /bin/bash
             - -c
             - |
-              while true; do echo "hello-app2-2"; sleep 10; done
+              for count in {1..10}; do echo "job2: " $count; sleep 10; done
