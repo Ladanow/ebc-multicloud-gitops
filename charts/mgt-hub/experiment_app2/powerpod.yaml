@@ -34,7 +34,7 @@ kind: Job
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "203"
-  name: testjob
+  name: testjob2
   namespace: app2
 spec:
   template:
@@ -46,7 +46,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - image: registry.redhat.io/openshift4/ose-tools-rhel8:latest 
-          name: testjob
+          name: testjob2
           command:
             - /bin/bash
             - -c
