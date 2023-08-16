@@ -40,6 +40,10 @@ quay:
 job:
   image: registry.redhat.io/openshift4/ose-cli:latest
   image2: quay.io/oahmed/omarx86jq:1
+  image3: quay.io/sfhassan/oc_net_tools
+  quay_hostname: quay-registry-quay-quay-enterprise.apps.mgmt.npss.bos2.lab
+  quay_user: quay
+  quay_passwd: registry
 
 global:
   hub:

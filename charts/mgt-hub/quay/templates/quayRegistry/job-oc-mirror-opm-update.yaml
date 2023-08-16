@@ -16,38 +16,40 @@ spec:
           name: "HTTPS_PROXY"
           value: "http://192.168.32.4:3128"
           name: "NO_PROXY"
-          value: "mgmt.npss.bos2.lab,10.128.0.0/14,fd02::/48,172.30.0.0/16,fd03::/112,192.168.34.0/25,fd00:1921:6834::/48"  
-
-      - image: {{ .Values.job.image2 }}
+          value: "mgmt.npss.bos2.lab,10.128.0.0/14,,172.30.0.0/16,172.31.1.0/24"  
+      - image: {{ .Values.job.image3 }}
         command:
         - /bin/bash
         - -c
         - |
-          QUAY_HOSTNAME=quay-registry-quay-quay-enterprise.apps.mgmt.npss.bos2.lab
-          oc version
-          opm version
-          oc-mirror version
-          wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/openshift-client-linux.tar.gz
-          wget https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/opm-linux.tar.gz
-          wget https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/oc-mirror.tar.gz
-          mkdir tmp
-          mv openshift-client-linux.tar.gz ~/tmp
-          mv opm-linux.tar.gz ~/tmp
-          cd tmp
-          tar -xf openshift-client-linux.tar.gz
-          tar -xf opm-linux.tar.gz
-          tar xvzf oc-mirror.tar.gz
-          chmod +x oc-mirror
-          cp oc /usr/local/bin
-          cp kubectl /usr/local/bin
-          cp opm  /usr/local/bin
-          cp oc-mirror /usr/local/bin/
-          oc version
-          oc-mirror version
-          rm -rfv tmp/    
- 
-
-
+          echo "###"
+          oc project quay-enterprise
+          echo "Checking for config map for ImageSource..."
+          while [ $(oc get cm -n quay-enterprise imageset | wc -l) != "2" ]; do echo "watiting for 5 seconds.."; sleep 5; done 
+          oc extract configmap/imageset
+          oc extract configmap/kube-root-ca.crt
+          cp ca.crt /etc/pki/ca-trust/source/
+          cp ca.crt /etc/pki/ca-trust/source/anchors
+          # might not need this one:
+          cp ca.crt /etc/pki/ca-trust/source/whitelist
+          update-ca-trust
+          ## Extract and modify pull secret
+          echo "Extract the current pull secret"
+          oc extract -n openshift-config secret/pull-secret --confirm --to=.
+          echo "Add new quay credentials to pull secret"
+          QUAY_HOSTNAME= {{ .Values.job.quay_hostname }}
+          QUAY_USER = {{ .Values.quay_user }}
+          QUAY_PASSWD = {{ .Values.quay_passwd }}
+          b64auth=$(echo -n '$QUAY_USER:$QUAY_PASSWD' | base64 -w0); echo $b64auth
+          AUTHSTRING="{\"$QUAY_HOSTNAME\": {\"auth\": \"$b64auth\",\"email\": \"dummy@quay1.npss\"}}"; 
+          echo $AUTHSTRING
+          jq -c ".auths += $AUTHSTRING" < .dockerconfigjson > .dockerconfigjson-upd
+          echo "Push updated pull secret back to the cluster"
+          oc -n openshift-config set data secret/pull-secret --from-file=.dockerconfigjson=.dockerconfigjson-upd
+          mkdir ~/.docker
+          mv .dockerconfigjson-upd ~/.docker/config.json
+          echo "Mirroring..."
+          oc-mirror --config=./ImageSetConfiguration.yaml docker://$QUAY_HOSTNAME
         name: oc-mirror-plugin
       dnsPolicy: ClusterFirst
       activeDeadlineSeconds: 900
