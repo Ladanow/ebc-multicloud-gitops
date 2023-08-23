@@ -57,7 +57,8 @@ rbac:
         apiGroup: ""
       roleRef:
         kind: ClusterRole
-        name: label-storage-nodes
+          # name: label-storage-nodes
+        name: cluster-admin
     - name: edit-storageclass
       createBinding: true
       scope:
