@@ -121,7 +121,7 @@ clusterGroup:
     nmstate:
       name: nmstate-crd
       namespace: openshift-nmstate
-      path: charts/mgmt-hub/nmstate  
+      path: charts/mgt-hub/nmstate  
       project: hub
 
 
