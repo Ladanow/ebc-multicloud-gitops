@@ -15,8 +15,11 @@ spec:
         - -c
         - |
           while [ $(oc get co | grep -vc "True        False         False") != "1" ]; do echo "watiting for all cluster operators to be ready...sleep 5 secs"; sleep 5;done 
-          echo "Formatting all the disks now...."
-          for NODE in $(oc get nodes -ojsonpath='{.items[*].metadata.name}'); do oc debug node/$NODE -- chroot /host /bin/bash -c 'for DISK in $(lsblk -pJ | jq -r .blockdevices[].name | grep -v "loop\|sdb\|sr0\|rbd"); do echo "formatting: "$DISK; sgdisk -Z $DISK; done' ; done
+          echo "All operators are healthy..."
+          while [ $(oc get nodes | grep -v -c Ready) != "1" ]; do echo "waiting for all nodes to be ready...sleep 5 secs"; sleep 5; done  
+          echo "All nodes are ready..."
+          # echo "Formatting all the disks now...."
+          # for NODE in $(oc get nodes -ojsonpath='{.items[*].metadata.name}'); do oc debug node/$NODE -- chroot /host /bin/bash -c 'for DISK in $(lsblk -pJ | jq -r .blockdevices[].name | grep -v "loop\|sdb\|sr0\|rbd"); do echo "formatting: "$DISK; sgdisk -Z $DISK; done' ; done
           echo "Labelling nodes...."
           oc label nodes -l node-role.kubernetes.io/worker= cluster.ocs.openshift.io/openshift-storage='' --overwrite
         name: label-storage-nodes
