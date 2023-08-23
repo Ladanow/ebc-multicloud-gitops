@@ -70,8 +70,5 @@ data:
     \ helm: {}\n\n\n"
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2023-08-16T21:14:54Z"
   name: imageset
   namespace: quay-enterprise
-  resourceVersion: "2881560"
-  uid: a5e9503c-e969-40a4-80d3-3783987d8571
