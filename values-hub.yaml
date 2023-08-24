@@ -44,18 +44,18 @@ clusterGroup:
       name: local-storage-operator
       namespace: openshift-local-storage
 
-    odf:
-      name: odf-operator
-      namespace: openshift-storage  
-
+        #    odf:
+        #      name: odf-operator
+        #      namespace: openshift-storage  
+        #
     cnv:
       name: kubevirt-hyperconverged
       namespace: openshift-cnv
 
-    quay:
-      name: quay-operator
-      namespace: quay-enterprise    
-      channel: stable-3.7
+        #    quay:
+        #      name: quay-operator
+        #      namespace: quay-enterprise    
+        #      channel: stable-3.7
 
     prometheus:
       name: prometheus
