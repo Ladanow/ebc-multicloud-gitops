@@ -23,7 +23,7 @@ spec:
           echo "Starting to Label nodes....First try:"
           oc label nodes -l node-role.kubernetes.io/worker= cluster.ocs.openshift.io/openshift-storage='' --overwrite
           echo "Checking if all workers are labelled..."
-          while [ $(oc get nodes -l node-role.kubernetes.io/worker= | wc -l) != $(oc get nodes -l cluster.ocs.openshift.io/openshift-storage= | wc -l) ]; do echo "All workers not yet labelled, trying again in 5 secs..."; sleep 5;  oc label nodes -l node-role.kubernetes.io/worker= cluster.ocs.openshift.io/openshift-storage='' --overwritel done
+          while [ $(oc get nodes -l node-role.kubernetes.io/worker= | wc -l) != $(oc get nodes -l cluster.ocs.openshift.io/openshift-storage= | wc -l) ]; do echo "All workers not yet labelled, trying again in 5 secs..."; sleep 5;  oc label nodes -l node-role.kubernetes.io/worker= cluster.ocs.openshift.io/openshift-storage='' --overwrite; done
         name: label-storage-nodes
       dnsPolicy: ClusterFirst
       restartPolicy: Never
