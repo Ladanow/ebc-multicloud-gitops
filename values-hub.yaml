@@ -99,6 +99,7 @@ clusterGroup:
 
   projects:
   - hub
+  - hello-world
 
   applications:
     acm:
