@@ -56,7 +56,7 @@ storageSystem:
 serviceAccountName: odf-node-label-sa
 rbac:
   roles:
-    - name: label-storage-nodes
+    - name: odf-label-storage-nodes
       createRole: true
       apiGroups:
         - '""'
@@ -85,7 +85,7 @@ rbac:
         - "patch"
         - "update"
   roleBindings:
-    - name: label-storage-nodes
+    - name: odf-label-storage-nodes
       createBinding: true
       scope:
         cluster: true
@@ -97,7 +97,7 @@ rbac:
         apiGroup: ""
       roleRef:
         kind: ClusterRole
-        name: label-storage-nodes
+        name: odf-label-storage-nodes
     - name: edit-storageclass
       createBinding: true
       scope:
