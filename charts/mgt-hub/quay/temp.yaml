@@ -29,13 +29,13 @@ spec:
           while [ $(oc get cm -n quay-enterprise imageset | wc -l) != "2" ]; do echo "watiting for 5 seconds.."; sleep 5; done 
           oc extract configmap/imageset
           oc extract configmap/kube-root-ca.crt
-          sudo mkdir -r /etc/pki/ca-trust/source/anchors
-          sudo mkdir -r /etc/pki/ca-trust/source/whitelist
-          sudo cp ca.crt /etc/pki/ca-trust/source/
-          sudo cp ca.crt /etc/pki/ca-trust/source/anchors
+          mkdir /etc/pki/ca-trust/source/anchors
+          mkdir /etc/pki/ca-trust/source/whitelist
+          cp ca.crt /etc/pki/ca-trust/source/
+          cp ca.crt /etc/pki/ca-trust/source/anchors
           # might not need this one:
-          sudo cp ca.crt /etc/pki/ca-trust/source/whitelist
-          sudo update-ca-trust
+          cp ca.crt /etc/pki/ca-trust/source/whitelist
+          update-ca-trust
           ## Extract and modify pull secret
           echo "Extract the current pull secret"
           oc extract -n openshift-config secret/pull-secret --confirm --to=.
@@ -52,7 +52,7 @@ spec:
           mkdir ~/.docker
           mv .dockerconfigjson-upd ~/.docker/config.json
           echo "Mirroring..."
-          oc-mirror --config=./imageSetConfiguration.yml docker://$QUAY_HOSTNAME/ocp/ocp4 
+          oc-mirror --config=./imagesetconfiguration.yml docker://$QUAY_HOSTNAME/ocp/ocp4 
         name: oc-mirror-plugin
       dnsPolicy: ClusterFirst
       activeDeadlineSeconds: 900

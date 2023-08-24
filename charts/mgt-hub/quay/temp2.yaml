@@ -19,6 +19,13 @@ spec:
           value: "mgmt.npss.bos2.lab,10.128.0.0/14,,172.30.0.0/16,172.31.1.0/24"  
         name: for-mirroring
         image: quay.io/sfhassan/oc_net_tools
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "250m"
+          limits:
+            memory: "20000Mi"
+            cpu: "2"    
         command:
         - /bin/bash
         - -c
