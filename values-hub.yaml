@@ -44,9 +44,9 @@ clusterGroup:
       name: local-storage-operator
       namespace: openshift-local-storage
 
-    odf:
-      name: odf-operator
-      namespace: openshift-storage  
+        #    odf:
+        #      name: odf-operator
+        #      namespace: openshift-storage  
  
     cnv:
       name: kubevirt-hyperconverged
@@ -146,12 +146,12 @@ clusterGroup:
       path: charts/mgt-hub/cnv  
       project: hub
 
-    odf:
-      name: odf
-      namespace: openshift-storage
-      path: charts/mgt-hub/openshift-data-foundations  
-      project: hub
-
+        #    odf:
+        #      name: odf
+        #      namespace: openshift-storage
+        #      path: charts/mgt-hub/openshift-data-foundations  
+        #      project: hub
+        #
     lso:
       name: local-storage 
       namespace: openshift-local-storage
