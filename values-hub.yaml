@@ -13,7 +13,7 @@ clusterGroup:
   - golang-external-secrets
   - npss-tnc-vms
   - openshift-local-storage
-  - openshift-storage  
+    #  - openshift-storage  
   - openshift-cnv
     #- quay-enterprise
   - policies  
