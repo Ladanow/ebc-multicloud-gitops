@@ -13,7 +13,7 @@ clusterGroup:
   - golang-external-secrets
   - npss-tnc-vms
   - openshift-local-storage
-    #  - openshift-storage  
+  - openshift-storage  
   - openshift-cnv
     #- quay-enterprise
   - policies  
@@ -44,9 +44,9 @@ clusterGroup:
       name: local-storage-operator
       namespace: openshift-local-storage
 
-        #    odf:
-        #      name: odf-operator
-        #      namespace: openshift-storage  
+    odf:
+      name: odf-operator
+      namespace: openshift-storage  
  
     cnv:
       name: kubevirt-hyperconverged
@@ -79,9 +79,9 @@ clusterGroup:
         #      name: performance-addon-operator
         #      namespace: openshift-performance-addon-operator    
 
-    talam:
-      name: topology-aware-lifecycle-manager
-      namespace: openshift-operators 
+        #talam:
+        #  name: topology-aware-lifecycle-manager
+        #  namespace: openshift-operators 
 
     ansible:
       name: ansible-automation-platform-operator
