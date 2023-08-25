@@ -113,11 +113,11 @@ clusterGroup:
         jsonPointers:
           - /spec/loggingCA
 
-    hello-world:
-      name: hello-world
-      namespace: hello-world
-      project: hello-world
-      path: charts/all/hello-world
+            #    hello-world:
+            #      name: hello-world
+            #      namespace: hello-world
+            #      project: hello-world
+            #      path: charts/all/hello-world
 
     nmstate:
       name: nmstate-crd
