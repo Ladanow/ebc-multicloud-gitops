@@ -22,6 +22,11 @@ clusterGroup:
     #  - openshift-operators-redhat
     #  - openshift-logging  
   - openshift-operators-redhat
+      annotations:
+        openshift.io/node-selector: ""
+      labels:
+        openshift.io/cluster-monitoring: "true"
+        argocd.argoproj.io/managed-by: {{ $.Values.global.pattern }}-{{ $.Values.clusterGroup.name }}
   - prom-kafka-adapter 
   - edge-gitops-vms
   - mano-apps
