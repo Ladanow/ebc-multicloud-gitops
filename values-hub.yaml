@@ -27,7 +27,7 @@ clusterGroup:
   - mano-apps
   - mano-automation
     #  - openshift-logging  
-    #  - openshift-performance-addon-operator
+  - openshift-performance-addon-operator
   - ansible
 
   subscriptions:
@@ -74,9 +74,9 @@ clusterGroup:
         #      name: cluster-logging
         #      namespace: openshift-logging
         #   
-        #    pao:
-        #      name: performance-addon-operator
-        #      namespace: openshift-performance-addon-operator    
+    pao:
+      name: performance-addon-operator
+      namespace: openshift-performance-addon-operator    
 
     talam:
       name: topology-aware-lifecycle-manager
