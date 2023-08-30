@@ -165,12 +165,12 @@ clusterGroup:
       path: charts/mgt-hub/quay
       project: hub
 
-            #    kafka:
-            #      name: kafka
-            #      namespace: kafka-cluster
-            #      path: charts/mgt-hub/kafka
-            #      project: hub
-            #
+    kafka:
+      name: kafka
+      namespace: kafka-cluster
+      path: charts/mgt-hub/kafka
+      project: hub
+
             #    monitoring:
             #      name: monitoring
             #      namespace: prom-kafka-adapter
