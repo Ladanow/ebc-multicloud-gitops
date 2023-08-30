@@ -34,3 +34,4 @@ do
    rm -f /tmp/$i-terminate-ns.yaml
    echo "done"
 done
+kill -9 $PID

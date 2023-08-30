@@ -78,9 +78,9 @@ clusterGroup:
         #      name: performance-addon-operator
         #      namespace: openshift-performance-addon-operator    
 
-        #talam:
-        #  name: topology-aware-lifecycle-manager
-        #  namespace: openshift-operators 
+    talam:
+      name: topology-aware-lifecycle-manager
+      namespace: openshift-operators 
 
     ansible:
       name: ansible-automation-platform-operator

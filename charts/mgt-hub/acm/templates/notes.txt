@@ -1,0 +1,19 @@
+1) make MCE install plan to be manual
+2) Enable CIM : 
+	2a) enable watch all ns 
+		    oc patch provisioning provisioning-configuration --type merge -p '{"spec":{"watchAllNamespaces": true }}'
+	2b) copy pull secret CM to MCE namespace: 
+
+    cd /tmp/cim
+    # Extract the cluster pull secret
+    oc extract secret/pull-secret -n openshift-config --confirm --to=.
+    # Create new pull secret for remote clusters
+    oc -n multicluster-engine create secret generic assisted-deployment-pull-secret \
+       --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson=.dockerconfigjson
+    rm .dockerconfigjson
+
+	2c) create CM: 
+oc -n multicluster-engine create configmap mirror-registry-config-map \
+   --from-file=ca-bundle.crt={{ quay_cert_dir }}/quayCA.crt \
+   --from-file=registries.conf=/tmp/cim/00_mirror-list
+ 
