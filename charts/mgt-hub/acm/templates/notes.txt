@@ -13,7 +13,10 @@
     rm .dockerconfigjson
 
 	2c) create CM: 
+mkdir temp/
+cd temp/
+oc extract -n quay-enterprise configmap/kube-root-ca.crt
+oc extract -n multicluster-engine cm/temp
 oc -n multicluster-engine create configmap mirror-registry-config-map \
-   --from-file=ca-bundle.crt={{ quay_cert_dir }}/quayCA.crt \
-   --from-file=registries.conf=/tmp/cim/00_mirror-list
- 
+--from-file=ca-bundle.crt=ca.crt --from-file=registries.conf=mirror-list
+rm -rf temp/ 

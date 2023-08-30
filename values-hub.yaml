@@ -171,12 +171,12 @@ clusterGroup:
       path: charts/mgt-hub/kafka
       project: hub
 
-            #    monitoring:
-            #      name: monitoring
-            #      namespace: prom-kafka-adapter
-            #      path: charts/mgt-hub/monitoring
-            #      project: hub  
-            #
+    monitoring:
+      name: monitoring
+      namespace: prom-kafka-adapter
+      path: charts/mgt-hub/monitoring
+      project: hub  
+
             #    logging:
             #      name: logging
             #      namespace: openshift-logging
