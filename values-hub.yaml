@@ -22,14 +22,14 @@ clusterGroup:
     #  - openshift-operators-redhat
     #  - openshift-logging  
   - openshift-operators-redhat
-      annotations:
-      - name: "openshift.io/node-selector"
-        value: ""
-      labels:
-      - name: "openshift.io/cluster-monitoring"
-        value: "true"
-      - name: "argocd.argoproj.io/managed-by"
-        value: "ebc-multicloud-gitops-hub" 
+    #      annotations:
+    #      - name: "openshift.io/node-selector"
+    #        value: ""
+    #      labels:
+    #      - name: "openshift.io/cluster-monitoring"
+    #        value: "true"
+    #      - name: "argocd.argoproj.io/managed-by"
+    #        value: "ebc-multicloud-gitops-hub" 
   - prom-kafka-adapter 
   - edge-gitops-vms
   - mano-apps
