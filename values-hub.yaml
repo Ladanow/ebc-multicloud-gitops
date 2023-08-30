@@ -187,7 +187,7 @@ clusterGroup:
     gitops:
       name: gitops
       namespace: npss-gitops
-      path: charts/mgt-hut/gitops
+      path: charts/mgt-hub/gitops
       project: hub
 
             #    logging:
