@@ -16,6 +16,7 @@ spec:
         - |
           oc patch sc ocs-storagecluster-ceph-rbd -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
         name: default-storage-class-rbd
+        resources: {}  
       dnsPolicy: ClusterFirst
       restartPolicy: Never
       serviceAccount: {{ .Values.serviceAccountName }}
