@@ -184,6 +184,11 @@ clusterGroup:
       namespace: prom-kafka-adapter
       path: charts/mgt-hub/monitoring
       project: hub  
+    gitops:
+      name: gitops
+      namespace: npss-gitops
+      path: charts/mgt-hut/gitops
+      project: hub
 
             #    logging:
             #      name: logging

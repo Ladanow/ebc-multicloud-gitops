@@ -1,0 +1,4 @@
+---
+ztp_plugin_image: registry.redhat.io/openshift4/ztp-site-generate-rhel8:v4.12.3
+ztp_instance_ns: npss-gitops
+openshift_gitops_api_version: argoproj.io/v1alpha1
