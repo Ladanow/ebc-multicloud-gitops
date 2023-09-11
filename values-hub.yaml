@@ -196,11 +196,11 @@ clusterGroup:
             #      path: charts/mgt-hub/logging
             #      project: hub
             #  
-            #    edge-gitops-vms:
-            #      name: edge-gitops-vms
-            #      namespace: edge-gitops-vms
-            #      project: hub
-            #      path: charts/mgt-hub/edge-gitops-vms
+    edge-gitops-vms:
+      name: edge-gitops-vms
+      namespace: mano-apps 
+      project: hub
+      path: charts/mgt-hub/vm-on-bm
             #
             #    mc:    
             #      name: mc
