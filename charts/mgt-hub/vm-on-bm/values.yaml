@@ -1,0 +1,83 @@
+
+
+
+idm_qcow: rhel-9.2-x86_64-kvm.qcow2 
+idm_app_name: idm-server
+idm_domain: identity
+idm_password: redhat
+idm_user: admin
+apps_subnet_gw: 25
+
+
+
+# Provisioner
+
+provisioner_ip: 192.168.32.4
+  #vars_path: /home/ocp-mano/dallas20/mgmt-config/vars
+
+# Optional Components
+
+  #deploy_idm: true
+  #deploy_satellite: true
+  #deploy_gitlab: true
+  #deploy_stf: true
+  #deploy_metallb: true
+
+# OpenShift cluster
+
+  #kubeconfig_path: /home/ocp-mano/OCP/AUTH/kubeconfig
+  #pull_secret_path: /home/ocp-mano/dallas20/crucible/pull-secret.txt
+
+# Basic Environment
+
+apps_ns: mano-apps
+apps_nad_name: apps-nad
+automation_ns: mano-automation
+automation_nad_name: automation-nad
+fabric_ns: fabric-manager
+fabric_nad_name: fabric-mgr-nad
+apps_subnet_len: 25 
+
+
+# Baremetal nodes
+
+  #bond1_name: bond1
+  #bond1_slave1: ens1f1
+  #bond1_slave2: eno12399
+  #fabric_mgr_int: eno8303
+
+# ODF
+
+  #max_device_count: 2 # Number of Ceph disks (OSDs) per node
+  #total_osds: 6 # Total number of OSDs in ODF cluster
+  #odf_nodes:
+  #  - mano2-master0
+  #  - mano2-master1
+  #  - mano2-master2
+
+# DNS Server
+dns_server_ip: 192.168.32.4 
+
+# IDM
+
+idm1_ip: 10.0.41.10
+idm1_hostname: idm1mgmt1
+idm2_ip: 10.0.41.11
+idm2_hostname: idm2mgmt1
+
+    # Going to use MANO-1 IDM as server
+ipaserver: idm.apps.mgmt.npss.bos2.lab
+ipareplicas:
+  - idm1mgmt1.mgmt.npss.bos2.lab
+  - idm2mgmt1.mgmt.npss.bos2.lab
+
+# QUAY
+#quay_fqdn: quay.mgmt.tmeprj2.comm.red.ibm.gsc
+#remote_quay_fqdn: quay.mgmt2.tmeprj2.comm.red.ibm.gsc
+#remote_quay_cert_dir: /home/mano2/dallas20/mgmt-config.ali/quay-certs
+
+# GitLab
+
+    #git_hostname: git
+    #git_ip: 172.31.254.85
+
