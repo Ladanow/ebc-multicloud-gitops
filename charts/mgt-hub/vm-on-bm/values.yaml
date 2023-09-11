@@ -6,7 +6,8 @@ idm_app_name: idm-server
 idm_domain: identity
 idm_password: redhat
 idm_user: admin
-apps_subnet_gw: 10.0.41.1/25
+apps_subnet_gw: 10.0.41.1
+domain: npss.bos2.lab  
 
 
 
