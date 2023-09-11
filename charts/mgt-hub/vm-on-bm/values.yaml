@@ -61,9 +61,9 @@ dns_server_ip: 192.168.32.4
 
 # IDM
 
-idm1_ip: 10.0.41.10
+idm1_ip: 10.0.41.40
 idm1_hostname: idm1mgmt1
-idm2_ip: 10.0.41.11
+idm2_ip: 10.0.41.41
 idm2_hostname: idm2mgmt1
 
     # Going to use MANO-1 IDM as server
