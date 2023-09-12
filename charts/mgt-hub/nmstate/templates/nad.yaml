@@ -13,5 +13,6 @@ spec:
       "type": "whereabouts", 
       "range": "10.0.41.0/25", 
       "range_start": "10.0.41.40", 
-      "range_end": "10.0.41.41"}
+      "range_end": "10.0.41.41"
+      }
     }'
