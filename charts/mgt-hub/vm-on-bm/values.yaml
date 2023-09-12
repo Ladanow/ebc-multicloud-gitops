@@ -32,7 +32,7 @@ provisioner_ip: 192.168.32.4
 # Basic Environment
 
 apps_ns: mano-apps
-apps_nad_name: nad-br-apps 
+apps_nad_name: macvlan-410 
 automation_ns: mano-automation
 automation_nad_name: automation-nad
 fabric_ns: fabric-manager
