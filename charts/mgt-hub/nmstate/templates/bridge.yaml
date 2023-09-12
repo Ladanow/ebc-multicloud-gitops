@@ -7,7 +7,7 @@ spec:
     node-role.kubernetes.io/worker: ''
   desiredState:
     interfaces:
-    - name: br-apps
+    - name: br-apps2
       type: linux-bridge
       state: up
       ipv4:
