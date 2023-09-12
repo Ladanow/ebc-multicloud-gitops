@@ -18,4 +18,4 @@ spec:
           stp:
             enabled: false
         port:
-          - name: bond1.vlan410
+          - name: bond0.vlan410
