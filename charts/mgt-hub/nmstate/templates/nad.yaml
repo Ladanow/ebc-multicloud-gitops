@@ -4,4 +4,4 @@ metadata:
   name: macvlan-410
   namespace: mano-apps
 spec:
-  config: '{ "cniVersion": "0.3.1", "name": "macvlan-410", "type": "macvlan", "mode": "bridge", "master": "bond0.410", "ipam": { "type": "static","addresses": [{ "address": "10.0.41.0/25" }]}}'
+  config: '{ "cniVersion": "0.3.1", "name": "macvlan-410", "type": "macvlan", "mode": "bridge", "master": "bond0.410", "ipam": { "type": "whereabouts", "range": "10.0.41.0/25", "range_start": "10.0.41.40", "range_end": "10.0.41.41"}}'
