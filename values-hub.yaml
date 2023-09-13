@@ -21,7 +21,7 @@ clusterGroup:
   - kafka-cluster 
     #  - openshift-operators-redhat
     #  - openshift-logging  
-  - openshift-operators-redhat
+  - openshift-operators-redhat:
       annotations:
         openshift.io/node-selector: ""
       labels:
