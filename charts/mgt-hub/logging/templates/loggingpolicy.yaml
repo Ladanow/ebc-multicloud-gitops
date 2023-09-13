@@ -15,9 +15,10 @@ metadata:
   name: openshift-logging
   annotations:
     openshift.io/node-selector: ""
+    argocd.argoproj.io/sync-wave: "-20"  
   labels:
     openshift.io/cluster-monitoring: "true"
-      #    argocd.argoproj.io/managed-by: ebc-multicloud-gitops-hub 
+    argocd.argoproj.io/managed-by: ebc-multicloud-gitops-hub 
 
 
 ---
@@ -34,6 +35,8 @@ kind: OperatorGroup
 metadata:
   name: cluster-logging
   namespace: openshift-logging
+  annotations:
+    argocd.argoproj.io/sync-wave: "-15"    
 spec:
   targetNamespaces:
   - openshift-logging
@@ -45,6 +48,8 @@ kind: "ClusterLogging"
 metadata:
   name: "instance"
   namespace: "openshift-logging"
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"    
 spec:
   managementState: "Managed"
   collection:
