@@ -55,17 +55,17 @@ spec:
   sourceNamespace: "openshift-marketplace"
 
 ---
-apiVersion: "logging.openshift.io/v1"
-kind: "ClusterLogging"
-metadata:
-  name: "instance"
-  namespace: "openshift-logging"
-  annotations:
-    argocd.argoproj.io/sync-wave: "-10"    
-spec:
-  managementState: "Managed"
-  collection:
-    logs:
-      type: "fluentd"
-      fluentd: {}
+#apiVersion: "logging.openshift.io/v1"
+#kind: "ClusterLogging"
+#metadata:
+#  name: "instance"
+#  namespace: "openshift-logging"
+#  annotations:
+#    argocd.argoproj.io/sync-wave: "-10"    
+#spec:
+#  managementState: "Managed"
+#  collection:
+#    logs:
+#      type: "fluentd"
+#      fluentd: {}
 
