@@ -21,7 +21,7 @@ spec:
         - class: ocs-storagecluster-ceph-rbd
           deleteClaim: true
           id: 0
-          size: '4Gi'
+          size: '8Gi'
           type: persistent-claim
       type: jbod
     listeners:
@@ -38,7 +38,7 @@ spec:
         tls: true
         type: route
     replicas: 3
-    version: 3.3.1
+    version: 3.5.0
   entityOperator:
     topicOperator: {}
     userOperator: {}
