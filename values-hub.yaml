@@ -204,10 +204,10 @@ clusterGroup:
             #      path: charts/mgt-hub/mc  
             #      project: hub
             #
-            #    ansible:
-            #      name: ansible
-            #      path: charts/mgt-hub/ansible
-            #      project: hub
+    ansible:
+      name: ansible
+      path: charts/mgt-hub/ansible
+      project: hub
             #
             #
             #
