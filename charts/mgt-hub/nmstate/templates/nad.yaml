@@ -10,9 +10,8 @@ spec:
     "type": "bridge",
     "bridge": "br-apps2",  
     "ipam": { 
-      "type": "whereabouts", 
-      "range": "10.0.41.0/25", 
-      "range_start": "10.0.41.40", 
-      "range_end": "10.0.41.41"
-      }
+      "type": "static",
+      "addresses": [ { "address": "10.0.41.0/25" } ] 
+      },
+    "capabilities": { "ips": true }
     }'
