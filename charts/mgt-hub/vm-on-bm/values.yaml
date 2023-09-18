@@ -76,11 +76,11 @@ dns_server_ip: 192.168.32.4
 # IDM
 
 sat1_ip: 10.0.41.40
-sat1_hostname: sat1mgmt1  
+sat1_hostname: satellite 
 idm1_ip: 10.0.41.41
 idm1_hostname: idm1mgmt1
 git1_ip: 10.0.41.42
-git1_hostname: git1mgmt1
+git1_hostname: git
 
 
 
