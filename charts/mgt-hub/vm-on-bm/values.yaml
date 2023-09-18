@@ -13,7 +13,7 @@ git_domain: git
 git_password: redhat
 git_user: admin
 
-sat_qcow: rhel-8.6-x86_64-kvm.qcow2
+sat_qcow: rhel-8.8-x86_64-kvm.qcow2 
 sat_app_name: sat-server
 sat_domain: satellite
 sat_password: redhat
