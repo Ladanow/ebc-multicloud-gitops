@@ -2,12 +2,12 @@ apiVersion: kubevirt.io/v1alpha3
 kind: VirtualMachine
 metadata:
   annotations:
-    name.os.template.kubevirt.io/rhel9.0: Red Hat Enterprise Linux 9.0 or higher
+    name.os.template.kubevirt.io/rhel8.8: Red Hat Enterprise Linux 9.0 or higher
     argocd.argoproj.io/sync-wave: "-6"
   labels:
     app: "{{ .Values.sat_app_name }}"
     flavor.template.kubevirt.io/medium: "true"
-    os.template.kubevirt.io/rhel9.0: "true"
+    os.template.kubevirt.io/rhel8.8: "true"
     workload.template.kubevirt.io/server: "true"
   name: "{{ .Values.sat1_hostname }}"
   namespace: "{{ .Values.apps_ns }}"
@@ -24,7 +24,7 @@ spec:
           - ReadWriteMany
         resources:
           requests:
-            storage: 50Gi
+            storage: 1000Gi
         storageClassName: ocs-storagecluster-ceph-rbd
         volumeMode: Block
       source:
@@ -37,7 +37,7 @@ spec:
         flavor.template.kubevirt.io/medium: "true"
         kubevirt.io/domain: "{{ .Values.sat_domain }}"
         kubevirt.io/size: large
-        os.template.kubevirt.io/rhel9.0: "true"
+        os.template.kubevirt.io/rhel8.8: "true"
         vm.kubevirt.io/name: "{{ .Values.sat_domain }}"
         workload.template.kubevirt.io/server: "true"
     spec:
@@ -45,7 +45,7 @@ spec:
         node-role.kubernetes.io/worker: ""
       domain:
         cpu:
-          cores: 4
+          cores: 16
           sockets: 1
           threads: 1
         devices:
@@ -67,7 +67,7 @@ spec:
           type: pc-q35-rhel8.2.0
         resources:
           requests:
-            memory: 8Gi
+            memory: 32Gi
       evictionStrategy: LiveMigrate
       hostname: "{{ .Values.sat1_hostname }}"
       networks:
