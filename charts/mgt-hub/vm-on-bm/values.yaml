@@ -8,13 +8,13 @@ idm_password: redhat
 idm_user: admin
 
 git_qcow: rhel-9.2-x86_64-kvm.qcow2
-git_app_name: idm-server
+git_app_name: git-server
 git_domain: git
 git_password: redhat
 git_user: admin
 
 sat__qcow: rhel-8.6-x86_64-kvm.qcow2
-sat_app_name: idm-server
+sat_app_name: sat-server
 sat_domain: satellite
 sat_password: redhat
 sat_user: admin  
@@ -80,7 +80,7 @@ sat1_hostname: sat1mgmt1
 idm1_ip: 10.0.41.41
 idm1_hostname: idm1mgmt1
 git1_ip: 10.0.41.42
-git1_hostname: idm2mgmt1
+git1_hostname: git1mgmt1
 
 
 
