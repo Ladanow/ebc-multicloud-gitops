@@ -1,0 +1,155 @@
+---
+- name: Create a directory to store scripts if it does not exist
+  ansible.builtin.file:
+    path: "{{ scripts_path }}"
+    state: directory
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: '0755'
+
+- name: Create a directory to store scripts outputs if it does not exist
+  ansible.builtin.file:
+    path: "{{ icsp_path }}"
+    state: directory
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: '0755'
+
+- name: Render templates
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "{{ scripts_path }}/{{ item }}"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: '0755'
+  with_items:
+    - "{{ quay_scripts }}"
+    - "{{ quay_upload_scripts }}"
+    - "{{ quay_config_files }}"
+    - "{{ quay_pull_secret_script }}"
+
+- name: Install Quay
+  vars:
+    namespace: "{{ quay_ns }}"
+    operator_name: "{{ quay_operator_name }}"
+    channel: "{{ quay_channel }}"
+    operator_group_name: "{{ namespace }}-operator-group"
+  block:
+    - name: Include create_project.yml
+      ansible.builtin.include_tasks: create_project.yml
+
+    - name: Include create_operator_group.yml
+      ansible.builtin.include_tasks: create_operator_group.yml
+
+    - name: Include create_subscription.yml
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Include check_operator.yml
+      ansible.builtin.include_tasks: check_operator.yml
+
+    - name: Set default storage class
+      ansible.builtin.script: "{{ scripts_path }}/01_default_storage_class.sh"
+
+    #- name: create network policies
+    #  ansible.builtin.include_tasks: create_resource.yml
+    #  vars:
+    #    src: 01_network_policies.yml
+
+    - name: Create certificates
+      ansible.builtin.include_tasks: create_self_signed_cert_for_quay.yml
+
+    - name: Create secrets
+      ansible.builtin.script: "{{ scripts_path }}/02_create_secret.sh"
+
+    - name: Create/Update Quay instance to use LDAP backend
+      ansible.builtin.include_tasks: create_resource.yml
+      vars:
+        src: 02_quay_instance_ldap.yml
+
+    - name: Check quay instance
+      ansible.builtin.script: "{{ scripts_path }}/03_check_quay_instance.sh"
+
+    - name: Verify that manocluster-registry-quay-database run
+      ansible.builtin.shell: |
+        set -o pipefail
+        oc get pods  -n {{ namespace }} | grep manocluster-registry-quay-mirror
+      register: csv
+      retries: 60
+      delay: 30
+      until: "'Running' in csv.stdout"
+      changed_when: false
+
+    - name: Wait 5 minutes for manually creating organizations
+      ansible.builtin.pause:
+        minutes: 5
+
+          #
+          # Issue: The script for uploading OLM operator
+          # images is failing when run in the loop below.
+          # However, the same script works fine when run from
+          # the command line ....
+          # For now, let the script fail and run the script manually
+          # as: "./quay-scripts/09_get_operators.sh >& ICSP/09_get_operators.log"
+          #
+- name: Run scripts to upload images to Quay
+  ansible.builtin.script:
+    cmd: "{{ scripts_path }}/{{ item }} >& {{ icsp_path }}/{{ item }}.log"
+  with_items: "{{ quay_upload_scripts }}"
+
+    # 
+    # Remaining tasks configure the OCP cluster to
+    # be able to access the local and remote quay 
+    # for pulling images from
+    #
+- name: copy remote Quay cert
+  become: true
+  ansible.builtin.copy:
+    dest: "{{ quay_cert_dir }}/remote_quayCA.crt"
+    src: "{{ remote_quay_cert_dir }}/quayCA.crt"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: "0755"
+    remote_src : true
+
+- name: Create ConfigMap from file
+  ansible.builtin.command: oc -n openshift-config create configmap quay-cas --from-file={{ quay_fqdn }}={{ quay_cert_dir }}/quayCA.crt --from-file={{ remote_quay_fqdn }}={{ quay_cert_dir }}/remote_quayCA.crt
+  changed_when: true
+
+- name: Apply config map
+  ansible.builtin.command: oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"quay-cas"}}}' --type=merge
+  changed_when: true
+
+- name: Update pull secret to add local and remote quay credentials
+  ansible.builtin.script:
+    cmd: "{{ scripts_path }}/{{ item }} >& {{ icsp_path }}/{{ item }}.log"
+  with_items: "{{ quay_pull_secret_script }}"
+
+- name: Pause for 30 secs for MCP to start getting updated
+  ansible.builtin.pause:
+    seconds: 30
+
+- name: Wait till MCP converges - master
+  ansible.builtin.shell: |
+    set -o pipefail
+    oc get mcp master -o jsonpath='{.status.degradedMachineCount}'
+  register: mcp
+  retries: 60
+  delay: 30
+  until: "'0' in mcp.stdout"
+  changed_when: false
+
+- name: Wait till MCP converges - worker
+  ansible.builtin.shell: |
+    set -o pipefail
+    oc get mcp master -o jsonpath='{.status.degradedMachineCount}'
+  register: mcp
+  retries: 60
+  delay: 30
+  until: "'0' in mcp.stdout"
+  changed_when: false
+
+- name: Delete scripts directory
+  ansible.builtin.file:
+    path: "{{ scripts_path }}"
+    state: absent
+

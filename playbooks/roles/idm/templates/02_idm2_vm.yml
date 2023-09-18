@@ -3,21 +3,20 @@ kind: VirtualMachine
 metadata:
   annotations:
     name.os.template.kubevirt.io/rhel9.0: Red Hat Enterprise Linux 9.0 or higher
-    argocd.argoproj.io/sync-wave: "-10"
   labels:
-    app: "{{ .Values.idm_app_name }}"
+    app: "{{ idm_app_name }}"
     flavor.template.kubevirt.io/medium: "true"
     os.template.kubevirt.io/rhel9.0: "true"
     workload.template.kubevirt.io/server: "true"
-  name: "{{ .Values.idm1_hostname }}"
-  namespace: "{{ .Values.apps_ns }}"
+  name: "{{ idm2_hostname }}"
+  namespace: "{{ apps_ns }}"
 spec:
   dataVolumeTemplates:
   - apiVersion: cdi.kubevirt.io/v1alpha1
     kind: DataVolume
     metadata:
       creationTimestamp: null
-      name: "{{ .Values.idm1_hostname }}-rootdisk-0"
+      name: "{{ idm2_hostname }}-rootdisk-0"
     spec:
       pvc:  #Set acccessModes to RWX and volumeMode to block for live migration and VM pod eviction
         accessModes:
@@ -29,16 +28,16 @@ spec:
         volumeMode: Block
       source:
         http:
-          url: http://{{ .Values.provisioner_ip }}/{{ .Values.idm_qcow }}
+          url: http://{{ provisioner_ip }}/{{ idm_qcow }}
   running: true
   template:
     metadata:
       labels:
         flavor.template.kubevirt.io/medium: "true"
-        kubevirt.io/domain: "{{ .Values.idm_domain }}"
+        kubevirt.io/domain: "{{ idm_domain }}"
         kubevirt.io/size: large
         os.template.kubevirt.io/rhel9.0: "true"
-        vm.kubevirt.io/name: "{{ .Values.idm_domain }}"
+        vm.kubevirt.io/name: "{{ idm_domain }}"
         workload.template.kubevirt.io/server: "true"
     spec:
       nodeSelector:
@@ -69,10 +68,10 @@ spec:
           requests:
             memory: 8Gi
       evictionStrategy: LiveMigrate
-      hostname: "{{ .Values.idm1_hostname }}"
+      hostname: "{{ idm2_hostname }}"
       networks:
         - multus:
-            networkName: "{{ .Values.apps_nad_name }}"
+            networkName: "{{ apps_nad_name }}"
           name: nic-1
       terminationGracePeriodSeconds: 180
       volumes:
@@ -80,8 +79,8 @@ spec:
             userData: |
               #cloud-config
               ssh_pwauth: True
-              user: {{ .Values.idm_user }}
-              password: {{ .Values.idm_password }}
+              user: {{ idm_user }}
+              password: {{ idm_password }}
               chpasswd:
                 expire: false
             networkData: |
@@ -89,13 +88,12 @@ spec:
               ethernets:
                 eth0:
                   addresses:
-                  - "{{ .Values.idm1_ip }}/{{ .Values.apps_subnet_len }}"
-                  gateway4: "{{ .Values.apps_subnet_gw }}"
+                  - "{{ idm2_ip }}/{{ apps_subnet_len }}"
+                  gateway4: "{{ apps_subnet_gw }}"
                   nameservers:
-                    search: [{{ .Values.domain }}]
-                    addresses: [{{ .Values.dns_server_ip}}]
+                    search: [{{ domain }}]
+                    addresses: [{{ dns_server_ip}}]
           name: cloudinitdisk
         - dataVolume:
-            name: "{{ .Values.idm1_hostname }}-rootdisk-0"
+            name: "{{ idm2_hostname }}-rootdisk-0"
           name: rootdisk
-

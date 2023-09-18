@@ -1,0 +1,37 @@
+---
+- name: Enable user workload monitoring
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 01_workload_monitoring.yml
+
+- name: Create prom-kafka-adapter namespace
+  ansible.builtin.include_tasks: create_project.yml
+  vars:
+    namespace: "{{ adapter_ns }}"
+
+- name: Check if config map already exists
+  ansible.builtin.shell: |
+    set -o pipefail
+    oc -n {{ adapter_ns }} get configmap
+  register: output
+
+- name: Create ConfigMap from file if it does not exist
+  ansible.builtin.command: oc create configmap kafka-certs --from-file="{{ secrets_path }}/" -n {{ adapter_ns }}
+  changed_when: true
+  when: "'kafka-certs' not in output.stdout"
+
+- name: Create prom kafka adapter deployment
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 02_deployment.yml
+
+- name: Create service
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 03_service.yml
+
+- name: Tune OCP monitoring
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 04_tuningOCPMonitoring.yml
+

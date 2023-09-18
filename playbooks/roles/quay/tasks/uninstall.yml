@@ -1,0 +1,5 @@
+---
+- name: Include delete_project.yml
+  ansible.builtin.include_tasks: delete_project.yml
+  vars:
+    namespace: "{{ quay_ns }}"

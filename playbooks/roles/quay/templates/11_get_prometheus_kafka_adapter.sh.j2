@@ -1,0 +1,16 @@
+export OCP_PULLSECRET_AUTHFILE='{{ local_secret_json }}'
+export LOCAL_REGISTRY={{ quay_fqdn }}
+export LOCAL_REGISTRY_IMAGE_TAG=telefonica
+export TAG=1.7.0
+export IMAGE_NAME=prometheus-kafka-adapter
+
+echo "Change directory to {{ icsp_path }}"
+cd {{ icsp_path }}
+
+#
+# Pick the image
+#
+ oc -a $OCP_PULLSECRET_AUTHFILE image mirror \
+        "docker.io/telefonica/${IMAGE_NAME}:${TAG}" \
+        "$LOCAL_REGISTRY/$LOCAL_REGISTRY_IMAGE_TAG/${IMAGE_NAME}:${TAG}"
+

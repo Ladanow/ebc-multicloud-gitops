@@ -6,6 +6,20 @@ idm_app_name: idm-server
 idm_domain: identity
 idm_password: redhat
 idm_user: admin
+
+git_qcow: rhel-9.2-x86_64-kvm.qcow2
+git_app_name: idm-server
+git_domain: git
+git_password: redhat
+git_user: admin
+
+sat__qcow: rhel-8.6-x86_64-kvm.qcow2
+sat_app_name: idm-server
+sat_domain: satellite
+sat_password: redhat
+sat_user: admin  
+
+
 apps_subnet_gw: 10.0.41.1
 domain: npss.bos2.lab  
 
@@ -31,7 +45,7 @@ provisioner_ip: 192.168.32.4
 
 # Basic Environment
 
-apps_ns: mano-apps
+apps_ns: mgmt-apps
 apps_nad_name: macvlan-410 
 automation_ns: mano-automation
 automation_nad_name: automation-nad
@@ -61,16 +75,24 @@ dns_server_ip: 192.168.32.4
 
 # IDM
 
-idm1_ip: 10.0.41.40
+sat1_ip: 10.0.41.40
+sat1_hostname: sat1mgmt1  
+idm1_ip: 10.0.41.41
 idm1_hostname: idm1mgmt1
-idm2_ip: 10.0.41.41
-idm2_hostname: idm2mgmt1
+git1_ip: 10.0.41.42
+git1_hostname: idm2mgmt1
+
+
+
+
 
     # Going to use MANO-1 IDM as server
 ipaserver: idm.apps.mgmt.npss.bos2.lab
 ipareplicas:
   - idm1mgmt1.mgmt.npss.bos2.lab
-  - idm2mgmt1.mgmt.npss.bos2.lab
+  - sat1mgmt1.mgmt.npss.bos2.lab
+  - git1mgmt1.mgmt.npss.bos2.lab
+
 
 # QUAY
 #quay_fqdn: quay.mgmt.tmeprj2.comm.red.ibm.gsc

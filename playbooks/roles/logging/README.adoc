@@ -1,0 +1,74 @@
+= logging role
+
+This role allows to install/uninstall logging tools in an OpenShift cluster.
+
+== Requirements
+
+* Ansible 2.9
+* OpenShift 4.10
+
+== Role Variables
+
+List of variables used by the role. The ones marked as _required_ need to be added to the playbook.
+
+[cols="4*<.^",options=header]
+|===
+|Variable |Description | Required | Default 
+
+|kubeconfig_path | Path to the kubeconfig file | Yes | None
+
+|rhocp_user | OpenShift user | Yes | None
+
+|provisioner_ip | IP Address of the provisioner host | Yes | None
+
+|elasticsearch_ns |Namespace used to install the Elasticsearch operator. | No | openshift-operators-redhat
+
+|elasticsearch_operator_name |Name of the Elasticsearch operator. | No | elasticsearch-operator
+
+|elasticsearch_channel |Name of the Elasticsearch operator channel. | No | stable-5.5
+
+|openshift_logging_ns |Namespace used to install the OpenShift logging operator. | No | openshift_logging
+
+|openshift_logging_operator_name |Name of the OpenShift logging operator. | No | cluster-logging
+
+|openshift_logging_channel |Name of the OpenShift Logging operator channel. | No | stable
+
+|openshift_logging_api_version |OpenShift Logging API version. | No | logging.openshift.io/v1
+
+|===
+
+== Examples
+
+Example playbook to install logging tools getting required variables from the playbook_required_vars.yml file:
+
+[source, yaml]
+----
+- name: Playbook to install logging tools
+  hosts: provisioner_host
+  vars_file:
+    - playbook_required_vars.yml
+  roles:
+    - role: logging
+      state: present
+----
+
+Example playbook to uninstall logging tools getting required variables from the playbook_required_vars.yml file:
+
+[source, yaml]
+----
+- name: Playbook to uninstall logging tools
+  hosts: provisioner_host
+  vars_file:
+    - playbook_required_vars.yml
+  roles:
+    - role: logging
+      state: absent
+----
+
+== License
+
+TBD
+
+== Author Information
+
+Alaitz Mendiola <alaitz@redhat.com>

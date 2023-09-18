@@ -30,6 +30,7 @@ clusterGroup:
   - prom-kafka-adapter 
   - edge-gitops-vms
   - mano-apps
+  - mgmt-apps  
   - mano-automation
     #  - openshift-logging  
   - openshift-performance-addon-operator
@@ -195,7 +196,7 @@ clusterGroup:
   
     edge-gitops-vms:
       name: edge-gitops-vms
-      namespace: mano-apps 
+      namespace: mgmt-apps 
       project: hub
       path: charts/mgt-hub/vm-on-bm
             #

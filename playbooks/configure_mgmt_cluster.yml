@@ -1,0 +1,134 @@
+- name: Configure an NPSS RA Management Cluster
+  hosts: localhost
+  #vars:
+  #  - ansible_python_interpreter: /usr/bin/python3.9
+  vars_files:
+    - /home/mano/ebc-multicloud-gitops/playbooks/vars/common.yml
+    - /home/mano/ebc-multicloud-gitops/playbooks/vars/secret.yml
+    - /home/mano/ebc-multicloud-gitops/playbooks/vars/satellite.yml
+  tasks:
+    - name: Deploy Kafka
+      block:
+        - ansible.builtin.include_role:
+            name: kafka
+          vars:
+            - state: present
+      rescue:
+        # - ansible.builtin.include_role:
+        #     name: kafka
+        #   vars:
+        #     - state: absent
+        - fail:
+            msg: "Something failed installing kafka."
+      tags: monitoring
+
+    - name: Configure monitoring
+      block:
+        - ansible.builtin.include_role:
+            name: monitoring
+          vars:
+            - state: present
+      rescue:
+        # - ansible.builtin.include_role:
+        #     name: monitoring
+        #   vars:
+        #     - state: absent
+        - fail:
+            msg: "Something failed while configuring monitoring."
+      tags: monitoring
+
+    - name: Deploy OpenShift logging
+      block:
+        - ansible.builtin.include_role:
+            name: logging
+          vars:
+            - state: present
+      rescue:
+        # - ansible.builtin.include_role:
+        #     name: logging
+        #   vars:
+        #     - state: absent
+        - fail:
+            msg: "Something failed installing logging tools."
+      tags: logging
+
+    - name: Deploy STF
+      block:
+        - ansible.builtin.include_role:
+            name: stf
+          vars:
+            - state: present
+      rescue:
+        # - ansible.builtin.include_role:
+        #     name: stf
+        #   vars:
+        #     - state: absent
+        - fail:
+            msg: "Something failed installing STF."
+      tags: stf
+      when: deploy_stf | default(false) | bool
+
+    - name: Deploy IDM
+      block:
+        - ansible.builtin.include_role:
+            name: idm
+          vars:
+            - state: present
+      rescue:
+        # - ansible.builtin.include_role:
+        #     name: idm
+        #   vars:
+        #     - state: absent
+        - fail:
+            msg: "Something failed installing IDM."
+      tags: idm
+      when: deploy_idm | default(false) | bool
+
+    - name: Deploy Satellite
+      block:
+        - ansible.builtin.include_role:
+            name: satellite
+          vars:
+            - state: present
+      rescue:
+        # - ansible.builtin.include_role:
+        #     name: satellite
+        #   vars:
+        #     - state: absent
+        - fail:
+            msg: "Something failed installing Satellite."
+      tags: satellite
+      when: deploy_satellite | default(false) | bool
+
+    - name: Deploy Quay
+      block:
+        - ansible.builtin.include_role:
+            name: quay
+          vars:
+            - state: present
+      rescue:
+        # - ansible.builtin.include_role:
+        #     name: quay
+        #   vars:
+        #     - state: absent
+        - fail:
+            msg: "Something failed installing Quay."
+      tags: quay
+
+    - name: Deploy GitLab
+      block:
+        - ansible.builtin.include_role:
+            name: gitlab
+          vars:
+            - state: present
+      rescue:
+        # - ansible.builtin.include_role:
+        #     name: gitlab
+        #   vars:
+        #     - state: absent
+        - fail:
+            msg: "Something failed installing GitLab."
+      tags: gitlab
+      when: deploy_gitlab | default(false) | bool
+
+

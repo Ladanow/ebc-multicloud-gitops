@@ -1,0 +1,15 @@
+#
+# Make RBD the default storage class
+# so that quay PVCs can be created in the default storage class
+#
+# The current default SC can be seen by `oc get sc` command
+# After OCS installation, no default is configured
+#
+# Wait for control-plane pods become ready
+oc wait --namespace={{ quay_ns }} --for=condition=Ready pod/$(oc get pods -o custom-columns=POD:.metadata.name --no-headers -n {{ quay_ns }} | grep {{ quay_operator_name }}) --timeout=600s
+# Set default storage class
+oc patch sc ocs-storagecluster-ceph-rbd -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
+
+
+
+

@@ -1,0 +1,7 @@
+---
+# vars file for satellite
+
+sat_qcow: rhel-8.8-x86_64-kvm.qcow2
+
+http_store_satellite_path: /opt/http_store/data/satellite
+scripts_path: satellite_scripts

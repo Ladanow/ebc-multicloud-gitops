@@ -1,0 +1,4 @@
+---
+# vars file for monitoring
+
+secrets_path: kafka-secrets

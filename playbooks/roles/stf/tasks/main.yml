@@ -1,0 +1,13 @@
+---
+# tasks file for stf
+
+- name: login to OCP cluster
+  ansible.builtin.include_tasks: cluster_login.yml
+
+- name: Install STF
+  ansible.builtin.include_tasks: install.yml
+  when: state|default('present') == 'present'
+
+- name: Uninstall STF
+  ansible.builtin.include_tasks: uninstall.yml
+  when: state|default('present') == 'absent'

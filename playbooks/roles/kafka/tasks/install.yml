@@ -1,0 +1,98 @@
+---
+- name: Install kafka
+  vars:
+    namespace: "{{ kafka_ns }}"
+    operator_name: "{{ kafka_operator_name }}"
+    channel: "{{ kafka_channel }}"
+    operator_group_name: "{{ namespace }}-operator-group"
+  block:
+    - name: Include create_project.yml
+      ansible.builtin.include_tasks: create_project.yml
+
+    - name: Include create_operator_group.yml
+      ansible.builtin.include_tasks: create_operator_group.yml
+
+    - name: Include create_subscription.yml
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Include check_operator.yml
+      ansible.builtin.include_tasks: check_operator.yml
+      vars:
+        operator_name: amqstreams
+
+    - name: Create Kafka Instance
+      ansible.builtin.include_tasks: create_resource.yml
+      vars:
+        src: 02_kafka_persistent.yml
+
+    - name: Verify that Kafka instance is ready
+      ansible.builtin.shell: |
+        set -o pipefail
+        oc -n "{{kafka_ns}}" get kafka.kafka | grep mano-kafka-cluster | awk '{print $4}'
+      register: kafka
+      retries: 60
+      delay: 10
+      until: "'True' in kafka.stdout"
+      changed_when: false
+
+    - name: Check cluster CA cert secret exists
+      ansible.builtin.command: oc -n {{ kafka_ns }} get secret mano-kafka-cluster-cluster-ca-cert
+      register: csv
+      retries: 60
+      delay: 10
+      until: "'Opaque' in csv.stdout"
+      changed_when: false
+
+    - name: Check client tls key secret exists
+      ansible.builtin.command: oc -n {{ kafka_ns }} get secret mano-kafka-cluster-clients-ca
+      register: csv
+      retries: 60
+      delay: 10
+      until: "'Opaque' in csv.stdout"
+      changed_when: false
+
+    - name: Check client tls cert secret exists
+      ansible.builtin.command: oc -n {{ kafka_ns }} get secret mano-kafka-cluster-clients-ca-cert
+      register: csv
+      retries: 60
+      delay: 30
+      until: "'Opaque' in csv.stdout"
+      changed_when: false
+
+- name: Create directory to store secrets
+  ansible.builtin.file:
+    group: "{{ ansible_env.USER }}"
+    owner: "{{ ansible_env.USER }}"
+    mode: "0775"
+    path: "{{ secrets_path }}"
+    state: directory
+
+- name: Create directory to store script
+  ansible.builtin.file:
+    group: "{{ ansible_env.USER }}"
+    owner: "{{ ansible_env.USER }}"
+    mode: "0775"
+    path: "{{ scripts_path }}"
+    state: directory
+
+- name: Create script file
+  ansible.builtin.template:
+    src: 03_kafka_secrets.sh.j2
+    dest: "{{ scripts_path }}/03_kafka_secrets.sh"
+    group: "{{ ansible_env.USER }}"
+    owner: "{{ ansible_env.USER }}"
+    mode: "0775"
+
+- name: Run 03_kafka_secrets.sh script
+  ansible.builtin.script: "{{ scripts_path }}/03_kafka_secrets.sh"
+
+- name: Delete scripts directory
+  ansible.builtin.file:
+    path: "{{ scripts_path }}"
+    state: absent
+
+- name: Create topics
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 04_create_topic.yml
+  loop: "{{ kafka_topic_list }}"

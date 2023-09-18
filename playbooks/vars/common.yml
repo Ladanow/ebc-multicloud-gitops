@@ -1,0 +1,48 @@
+# Provisioner
+
+provisioner_ip: 192.168.32.4
+#vars_path: /home/ocp-mano/dallas20/mgmt-config/vars
+
+# Optional Components
+
+deploy_idm: true
+deploy_satellite: true
+deploy_gitlab: true
+deploy_stf: true
+
+# OpenShift cluster
+
+kubeconfig_path: /home/mano/.kube/config
+#pull_secret_path: /home/ocp-mano/dallas20/crucible/pull-secret.txt
+
+# Basic Environment
+
+apps_ns: mgmt-apps
+apps_nad_name: bridge-nad410
+
+# DNS Server
+dns_server_ip: 192.168.32.4
+
+# IDM
+
+#idm1_ip: 172.31.254.83
+#idm1_hostname: idm1mano2
+#idm2_ip: 172.31.254.84
+#idm2_hostname: idm2mano2
+
+    # Going to use MGMT-1 IDM as server
+#ipaserver: idm.tmeprj2.comm.red.ibm.gsc
+#ipareplicas:
+#  - idm1mano2.tmeprj2.comm.red.ibm.gsc
+#  - idm2mano2.tmeprj2.comm.red.ibm.gsc
+
+# QUAY
+#quay_fqdn: quay.mgmt.tmeprj2.comm.red.ibm.gsc
+#remote_quay_fqdn: quay.mgmt2.tmeprj2.comm.red.ibm.gsc
+#remote_quay_cert_dir: /home/mano2/dallas20/mgmt-config.ali/quay-certs
+
+# GitLab
+
+git_hostname: git
+git_ip: 10.0.41.6
+

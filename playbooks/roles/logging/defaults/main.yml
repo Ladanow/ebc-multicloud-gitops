@@ -1,0 +1,5 @@
+---
+# defaults file for logging
+
+elasticsearch_ns: openshift-operators-redhat
+openshift_logging_ns: openshift-logging

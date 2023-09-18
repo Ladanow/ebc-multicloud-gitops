@@ -1,0 +1,34 @@
+---
+# defaults file for quay
+
+quay_ns: quay-enterprise
+
+quay_fqdn: quay.{{ mgmt_cluster_name }}.{{ domain }}
+
+ocp_rel_maj: 4
+ocp_rel_min: 8
+ocp_rel_mnt: 39
+ocp_release: 4.8
+ai_version: 'v1.0.24.2'
+agent_version: 'v2.1.4'
+ospd_release: 1.2.3
+
+# Directory to be created
+quay_cert_dir: quay-certs
+
+quay_cert_file_owner: "{{ ansible_env.USER }}"
+quay_cert_file_group: "{{ quay_cert_file_owner }}"
+
+quay_cert_file_prefix: quay
+quay_ca_path: "{{ quay_cert_dir }}/{{ quay_cert_file_prefix }}CA.crt"
+quay_key_path: "{{ quay_cert_dir }}/{{ quay_cert_file_prefix }}.key"
+quay_csr_path: "{{ quay_cert_dir }}/{{ quay_cert_file_prefix }}.csr"
+quay_cert_path: "{{ quay_cert_dir }}/{{ quay_cert_file_prefix }}.crt"
+
+# Cert vars
+quay_cert_common_name: "{{ quay_fqdn }}"
+quay_cert_country: US
+quay_cert_locality: Raleigh
+quay_cert_organization: Red Hat, Inc.
+quay_cert_organizational_unit: Lab
+quay_cert_state: NC

@@ -1,0 +1,11 @@
+---
+# vars file for logging
+
+elasticsearch_operator_name: elasticsearch-operator
+elasticsearch_channel: stable-5.6
+
+openshift_logging_operator_name: cluster-logging
+openshift_logging_channel: stable
+openshift_logging_api_version: logging.openshift.io/v1
+
+secrets_path: kafka-secrets

@@ -1,0 +1,15 @@
+---
+- name: Delete project {{ namespace }}
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig_path }}"
+    username: "{{ rhocp_user }}"
+    password: "{{ rhocp_password }}"
+    state: absent
+    definition:
+      apiVersion: project.openshift.io/v1
+      kind: Project
+      metadata:
+        name: "{{ namespace }}"
+        labels:
+          kubernetes.io/metadata.name: "{{ namespace }}"
+      spec: {}

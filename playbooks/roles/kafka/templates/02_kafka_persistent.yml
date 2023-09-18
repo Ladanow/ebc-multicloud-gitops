@@ -1,0 +1,49 @@
+apiVersion: "{{ kafka_api_version }}"
+kind: Kafka
+metadata:
+  name: mano-kafka-cluster
+  namespace: "{{ kafka_ns }}"
+spec:
+  kafka:
+    config:
+      # topics can't be auto-created.
+      auto.create.topics.enable: false
+      offsets.topic.replication.factor: 1
+      transaction.state.log.replication.factor: 1
+      transaction.state.log.min.isr: 1
+      min.insync.replicas: 1
+      inter.broker.protocol.version: '3.3'
+      message.max.bytes: 369295618
+    storage:
+      volumes:
+        - class: ocs-storagecluster-ceph-rbd
+          deleteClaim: true
+          id: 0
+          size: '50Gi'
+          type: persistent-claim
+      type: jbod
+    listeners:
+      - name: plain
+        port: 9092
+        tls: false
+        type: internal
+      - name: tls
+        port: 9093
+        tls: true
+        type: internal
+      - name: external
+        port: 9094
+        tls: true
+        type: route
+    replicas: 3
+    version: 3.3.1
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+  zookeeper:
+    storage:
+      class: ocs-storagecluster-ceph-rbd
+      deleteClaim: true
+      size: '40Gi'
+      type: persistent-claim
+    replicas: 3

@@ -1,0 +1,61 @@
+---
+- name: Include create_resource.yml
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 01_projects.yml
+
+- name: Install Elasticsearch
+  vars:
+    namespace: "{{ elasticsearch_ns }}"
+    operator_name: "{{ elasticsearch_operator_name }}"
+    channel: "{{ elasticsearch_channel }}"
+    install_plan_approval: "Automatic"
+    operator_group_name: "{{ namespace }}-operator-group"
+  block:
+    - name: Include create_operator_group_global.yml
+      ansible.builtin.include_tasks: create_operator_group_global.yml
+
+    - name: Include create_subscription.yml
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Include check_operator.yml
+      ansible.builtin.include_tasks: check_operator.yml
+
+- name: Install OpenShift logging
+  vars:
+    namespace: "{{ openshift_logging_ns }}"
+    operator_name: "{{ openshift_logging_operator_name }}"
+    channel: "{{ openshift_logging_channel }}"
+    operator_group_name: "{{ namespace }}-operator-group"
+  block:
+    - name: Include create_operator_group.yml
+      ansible.builtin.include_tasks: create_operator_group.yml
+
+    - name: Include create_subscription.yml
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Include check_operator.yml
+      ansible.builtin.include_tasks: check_operator.yml
+
+- name: Create clusterLogging
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 02_clusterLogging.yml
+
+- name: Check if secret already exists
+  ansible.builtin.shell: |
+    set -o pipefail
+    oc -n {{ openshift_logging_ns }} get secret
+  register: output
+
+- name: Create secret from file if it does not exists
+  ansible.builtin.command: oc create secret generic kafka-secret --from-file="{{ secrets_path }}/" -n {{ openshift_logging_ns }}
+  changed_when: true
+  when: "'kafka-secret' not in output.stdout"
+
+- name: Configure LogForwarder
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 03_clusterLogForwarder.yml
+
+

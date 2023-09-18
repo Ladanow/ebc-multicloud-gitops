@@ -1,0 +1,6 @@
+---
+# defaults file for stf
+
+stf_ns: service-telemetry
+cert_manager_ns: cert-manager-operator
+adapter_ns: prom-kafka-adapter

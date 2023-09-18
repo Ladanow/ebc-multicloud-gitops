@@ -1,0 +1,119 @@
+---
+- name: Set RBD as default storage class
+  ansible.builtin.shell: |
+    set -o pipefail
+    oc patch sc ocs-storagecluster-ceph-rbd -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
+
+- name: Create resources
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: "{{ item }}"
+  loop:
+    - 01_namespaces.yml
+    - 02_operator_groups.yml
+    - 03_catalog_source.yml
+
+- name: Install Cert Manager operator
+  vars:
+    namespace: "{{ cert_manager_ns }}"
+    operator_name: "{{ cert_manager_operator_name }}"
+    channel: "{{ cert_manager_channel }}"
+    subscription_name: "{{ cert_manager_subscription_name }}"
+  block:
+    - name: Create subscription
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Wait for CSV
+      ansible.builtin.include_tasks: check_operator.yml
+      vars:
+        operator_name: cert-manager-operator
+
+- name: Install AMQ7 Interconnect operator
+  vars:
+    namespace: "{{ stf_ns }}"
+    operator_name: "{{ amq7_operator_name }}"
+    channel: "{{ amq7_channel }}"
+    subscription_name: "{{ amq7_subscription_name }}"
+  block:
+    - name: Create subscription
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Wait for CSV
+      ansible.builtin.include_tasks: check_operator.yml
+
+- name: Install Prometheus operator
+  vars:
+    namespace: "{{ stf_ns }}"
+    operator_name: "{{ prometheus_operator_name }}"
+    channel: "{{ prometheus_channel }}"
+    subscription_name: "{{ prometheus_subscription_name }}"
+    subscription_source: "{{ prometheus_subscription_source }}"
+  block:
+    - name: Create subscription
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Wait for CSV
+      ansible.builtin.include_tasks: check_operator.yml
+      vars:
+        operator_name: prometheusoperator
+
+- name: Install Grafana operator
+  vars:
+    namespace: "{{ stf_ns }}"
+    operator_name: "{{ grafana_operator_name }}"
+    channel: "{{ grafana_channel }}"
+    subscription_name: "{{ grafana_subscription_name }}"
+    subscription_source: "{{ grafana_subscription_source }}"
+  block:
+    - name: Create subscription
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Wait for CSV
+      ansible.builtin.include_tasks: check_operator.yml
+
+- name: Install Elasticsearch ECK operator
+  vars:
+    namespace: "{{ stf_ns }}"
+    operator_name: "{{ eck_operator_name }}"
+    channel: "{{ eck_channel }}"
+    subscription_name: "{{ eck_subscription_name }}"
+    subscription_source: "{{ eck_subscription_source }}"
+  block:
+    - name: Create subscription
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Wait for CSV
+      ansible.builtin.include_tasks: check_operator.yml
+
+- name: Install Service Telemetry operator
+  vars:
+    namespace: "{{ stf_ns }}"
+    operator_name: "{{ stf_operator_name }}"
+    channel: "{{ stf_channel }}"
+    subscription_name: "{{ stf_subscription_name }}"
+  block:
+    - name: Create subscription
+      ansible.builtin.include_tasks: create_subscription.yml
+
+    - name: Wait for CSV
+      ansible.builtin.include_tasks: check_operator.yml
+
+- name: Create PVC for image registry
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 04_pvc.yml
+
+- name: Pause for 30 secs
+  ansible.builtin.pause:
+    seconds: 30
+
+- name: Create resources
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: "{{ item }}"
+  loop:
+    - 05_image_registry.yml
+    - 06_PromKafkaAdap.yml
+    - 07_service.yml
+    - 08_stf.yml
+    - 09_elastic_route.yml

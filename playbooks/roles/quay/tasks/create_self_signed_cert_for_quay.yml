@@ -1,0 +1,84 @@
+---
+- name: Verify the certificate variables are set
+  ansible.builtin.assert:
+    that:
+      - item is defined
+      - item is string
+      - item | trim != ''
+    quiet: true
+  loop:
+    - "{{ quay_cert_common_name }}"
+    - "{{ quay_cert_country }}"
+    - "{{ quay_cert_state }}"
+    - "{{ quay_cert_locality }}"
+    - "{{ quay_cert_organization }}"
+    - "{{ quay_cert_organizational_unit }}"
+
+- name: Install python3-cryptography
+  become: true
+  ansible.builtin.package:
+    name: python3-cryptography
+    state: present
+
+- name: Create directory to hold the cert files
+  become: true
+  ansible.builtin.file:
+    path: "{{ quay_cert_dir }}"
+    owner: "{{ quay_cert_file_owner }}"
+    group: "{{ quay_cert_file_group }}"
+    mode: "0770"
+    state: directory
+    recurse: true
+
+- name: Generate an OpenSSL private key
+  community.crypto.openssl_privatekey:
+    path: "{{ quay_key_path }}"
+
+- name: Generate an OpenSSL CSR
+  community.crypto.openssl_csr:
+    path: "{{ quay_csr_path }}"
+    privatekey_path: "{{ quay_key_path }}"
+    common_name: "{{ quay_cert_common_name }}"
+    country_name: "{{ quay_cert_country }}"
+    state_or_province_name: "{{ quay_cert_state }}"
+    locality_name: "{{ quay_cert_locality }}"
+    organization_name: "{{ quay_cert_organization }}"
+    organizational_unit_name: "{{ quay_cert_organizational_unit }}"
+    basic_constraints_critical: true
+    create_subject_key_identifier: true
+    basic_constraints: ["CA:TRUE"]
+
+- name: Generate a selfsigned OpenSSL CA Certificate
+  community.crypto.x509_certificate:
+    path: "{{ quay_ca_path }}"
+    privatekey_path: "{{ quay_key_path }}"
+    csr_path: "{{ quay_csr_path }}"
+    provider: selfsigned
+
+- name: Generate an ownca OpenSSL Certificate
+  community.crypto.x509_certificate:
+    path: "{{ quay_cert_path }}"
+    ownca_privatekey_path: "{{ quay_key_path }}"
+    csr_path: "{{ quay_csr_path }}"
+    ownca_path: "{{ quay_ca_path }}"
+    ownca_create_authority_key_identifier: true
+    provider: ownca
+
+- name: Set cert in CA trust
+  become: true
+  block:
+    - name: Copy cert to pki directory
+      ansible.builtin.copy:
+        src: "{{ quay_cert_path }}"
+        dest: /etc/pki/ca-trust/source/anchors/{{ quay_cert_file_prefix }}.crt
+        remote_src: true
+        owner: "{{ quay_cert_file_owner }}"
+        group: "{{ quay_cert_file_group }}"
+        mode: "0660"
+        force: true
+        backup: true
+
+    - name: Update the CA trust files
+      ansible.builtin.command: update-ca-trust extract
+      changed_when: true
+

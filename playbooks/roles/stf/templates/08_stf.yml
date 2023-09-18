@@ -1,0 +1,145 @@
+apiVersion: infra.watch/v1beta1
+kind: ServiceTelemetry
+metadata:
+  name: default
+  namespace: {{ stf_ns }}
+spec:
+  alerting:
+    alertmanager:
+      receivers:
+        snmpTraps:
+          enabled: false
+          target: 192.168.24.254
+      storage:
+        persistent:
+          pvcStorageRequest: 20G
+        strategy: persistent
+    enabled: true
+  backends:
+    events:
+      elasticsearch:
+        enabled: true
+        storage:
+          persistent:
+            pvcStorageRequest: 20Gi
+          strategy: persistent
+        version: 7.16.1
+    logs:
+      loki:
+        enabled: false
+        flavor: 1x.extra-small
+        replicationFactor: 1
+        storage:
+          objectStorageSecret: test
+          storageClass: standard
+    metrics:
+      prometheus:
+        enabled: true
+  prometheusManifest: |
+    apiVersion: monitoring.coreos.com/v1
+    kind: Prometheus
+    metadata:
+      labels:
+        prometheus: default
+      name: default
+      namespace: {{ stf_ns }}
+    spec:
+      alerting:
+        alertmanagers:
+        - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+          name: default-alertmanager-proxy
+          namespace: service-telemetry
+          port: web
+          scheme: https
+          tlsConfig:
+            caFile: /etc/prometheus/configmaps/serving-certs-ca-bundle/service-ca.crt
+            serverName: default-alertmanager-proxy.service-telemetry.svc
+      configMaps:
+      - serving-certs-ca-bundle
+      containers:
+      - args:
+        - -https-address=:9092
+        - -tls-cert=/etc/tls/private/tls.crt
+        - -tls-key=/etc/tls/private/tls.key
+        - -upstream=http://localhost:9090/
+        - -htpasswd-file=/etc/proxy/htpasswd/auth
+        - -cookie-secret-file=/etc/proxy/secrets/session_secret
+        - -openshift-service-account=prometheus-k8s
+        - '-openshift-sar={"resource": "namespaces", "verb": "get"}'
+        image: image-registry.openshift-image-registry.svc:5000/openshift/oauth-proxy:v4.4
+        name: oauth-proxy
+        ports:
+        - containerPort: 9092
+          name: https
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/tls/private
+          name: secret-default-prometheus-proxy-tls
+        - mountPath: /etc/proxy/secrets
+          name: secret-default-session-secret
+        - mountPath: /etc/proxy/htpasswd
+          name: secret-default-prometheus-htpasswd
+      evaluationInterval: 30s
+      listenLocal: true
+      podMetadata:
+        labels:
+          prometheus: default
+      replicas: 1
+      retention: 24h
+      ruleSelector: {}
+      scrapeInterval: 30s
+      secrets:
+      - default-prometheus-proxy-tls
+      - default-session-secret
+      - default-prometheus-htpasswd
+      securityContext: {}
+      serviceAccountName: prometheus-k8s
+      serviceMonitorSelector:
+        matchLabels:
+          app: smart-gateway
+      storage:
+        volumeClaimTemplate:
+          spec:
+            resources:
+              requests:
+                storage: 20G
+      remoteWrite:
+        - url: "http://stf-kafka-adapter-svc.prom-kafka-adapter.svc.cluster.local:8080/receive"
+  clouds:
+  - name: vimosp
+    events:
+      collectors:
+      - collectorType: collectd
+        debugEnabled: false
+        subscriptionAddress: collectd/vimosp-notify
+      - collectorType: ceilometer
+        debugEnabled: false
+        subscriptionAddress: anycast/ceilometer/vimosp-event.sample
+    metrics:
+      collectors:
+      - collectorType: collectd
+        debugEnabled: false
+        subscriptionAddress: collectd/vimosp-telemetry
+      - collectorType: ceilometer
+        debugEnabled: false
+        subscriptionAddress: anycast/ceilometer/vimosp-metering.sample
+      - collectorType: sensubility
+        debugEnabled: false
+        subscriptionAddress: sensubility/vimosp-telemetry
+  graphing:
+    enabled: true
+    grafana:
+      adminPassword: secret
+      adminUser: root
+      baseImage: docker.io/grafana/grafana:latest
+      disableSignoutMenu: false
+      ingressEnabled: true
+  highAvailability:
+    enabled: false
+  observabilityStrategy: use_community
+  transports:
+    qdr:
+      enabled: true
+      web:
+        enabled: false
+

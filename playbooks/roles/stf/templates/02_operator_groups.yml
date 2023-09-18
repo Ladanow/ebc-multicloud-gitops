@@ -1,0 +1,18 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: "{{ stf_ns }}-operator-group"
+  namespace: "{{ stf_ns }}"
+spec:
+  targetNamespaces:
+  - "{{ stf_ns }}"
+
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: "{{ cert_manager_ns }}-operator-group"
+  namespace: "{{ cert_manager_ns }}"
+spec:
+  targetNamespaces:
+    - "{{ cert_manager_ns }}"

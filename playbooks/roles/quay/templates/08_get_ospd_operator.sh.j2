@@ -1,0 +1,41 @@
+export OSPD_RELEASE={{ ospd_release }}
+export OCP_PULLSECRET_AUTHFILE='{{ local_secret_json }}'
+export LOCAL_REGISTRY={{ quay_fqdn }}
+export LOCAL_REGISTRY_INDEX_TAG=ospd/osp-director-operator-index:$OSPD_RELEASE
+export LOCAL_REGISTRY_IMAGE_TAG=ospd
+
+echo "Change directory to {{ icsp_path }}"
+cd {{ icsp_path }}
+
+# Get the SHA256 value for the OSPD operator bundle using the following command:
+# skopeo inspect docker://quay.io/openstack-k8s-operators/osp-director-operator-bundle:1.1.2 | grep Digest
+#
+# use the SHA value in the opm command below
+#
+# The SHA value for v1.1.2 is:
+#  --bundles quay.io/openstack-k8s-operators/osp-director-operator-bundle@sha256:1c1e2a231000b8b50577b935e2d1bfbfd40a43474833562298194e06b8cd959e \
+#
+# The SHA value for 1.2.1 bundle is:
+# --bundles quay.io/openstack-k8s-operators/osp-director-operator-bundle@sha256:6d47405358461652b42e5f8e0cb4c495956945c25ec0d906b15bded6a96ecaab \
+#
+# The SHA value for 1.2.2 bundle is:
+# --bundles quay.io/openstack-k8s-operators/osp-director-operator-bundle@sha256:fdf89779c00cd8cff6bf85c318f1647bba94dc7ae805646f095811f3c6cad216 \
+#
+# The SHA value for 1.2.3 bundle is:
+# --bundles quay.io/openstack-k8s-operators/osp-director-operator-bundle@sha256:41d7e36a72673a872ab68c7a7fd99e4f35e6406808cdc730247c1827c02d92f3 \
+#
+echo "Adding to index \n"
+opm index add \
+    --bundles quay.io/openstack-k8s-operators/osp-director-operator-bundle@sha256:fdf89779c00cd8cff6bf85c318f1647bba94dc7ae805646f095811f3c6cad216 \
+    --tag $LOCAL_REGISTRY/$LOCAL_REGISTRY_INDEX_TAG 
+
+#
+# Push the updated index image
+#
+echo "Running podman push\n"
+podman push $LOCAL_REGISTRY/$LOCAL_REGISTRY_INDEX_TAG --authfile $OCP_PULLSECRET_AUTHFILE
+
+# 
+echo "Mirorring catalog\n"
+oc adm catalog mirror $LOCAL_REGISTRY/$LOCAL_REGISTRY_INDEX_TAG $LOCAL_REGISTRY/$LOCAL_REGISTRY_IMAGE_TAG --registry-config=$OCP_PULLSECRET_AUTHFILE --insecure
+

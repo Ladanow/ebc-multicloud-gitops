@@ -1,0 +1,12 @@
+---
+#
+datacenter: {{ mgmt_cluster_name }}
+dns_domain: '{{ mgmt_cluster_name }}.{{ domain }}'
+# Retry and delay values for any loops
+wait_retries: 30
+wait_delay: 10
+wait_timeout: 60
+wait_deploy_timeout: 360
+hostname: "{{ satellite_fqdn }}"
+...
+

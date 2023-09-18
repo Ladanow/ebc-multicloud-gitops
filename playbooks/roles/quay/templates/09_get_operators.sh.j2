@@ -1,0 +1,21 @@
+export OCP_RELEASE={{ ocp_release }}
+export OCP_PULLSECRET_AUTHFILE='{{ local_secret_json }}'
+export LOCAL_REGISTRY={{ quay_fqdn }}
+export LOCAL_REGISTRY_INDEX_TAG=olmidx/redhat-operator-index:v$OCP_RELEASE
+export LOCAL_REGISTRY_IMAGE_TAG=olmidx
+
+export RH_OP_INDEX="{{ upstream_url_registry }}/redhat/redhat-operator-index:v${OCP_RELEASE}"
+export RH_OP_PACKAGES='amq7-cert-manager-operator,amq7-interconnect-operator,cluster-logging,kubevirt-hyperconverged,local-storage-operator,ocs-operator,performance-addon-operator,quay-operator,sriov-network-operator,elasticsearch-operator,service-telemetry-operator,servicemeshoperator,jaeger-product,kiali-ossm,openshift-gitops-operator,multicluster-engine,advanced-cluster-management,odf-operator,odf-multicluster-orchestrator,odf-csi-addons-operator,odf-lvm-operator,mcg-operator'
+
+echo "Change directory to {{ icsp_path }}"
+cd {{ icsp_path }}
+
+echo "Running index prune\n"
+opm index prune --from-index $RH_OP_INDEX --packages $RH_OP_PACKAGES --tag $LOCAL_REGISTRY/$LOCAL_REGISTRY_INDEX_TAG
+
+echo "Running podman push\n"
+podman push $LOCAL_REGISTRY/$LOCAL_REGISTRY_INDEX_TAG --authfile $OCP_PULLSECRET_AUTHFILE
+
+echo "Mirorring catalog\n"
+oc adm catalog mirror $LOCAL_REGISTRY/$LOCAL_REGISTRY_INDEX_TAG $LOCAL_REGISTRY/$LOCAL_REGISTRY_IMAGE_TAG --registry-config=$OCP_PULLSECRET_AUTHFILE --index-filter-by-os='linux/amd64' --insecure
+

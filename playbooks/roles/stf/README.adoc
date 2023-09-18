@@ -1,0 +1,98 @@
+= stf role
+
+This role allows to install/uninstall STF in an OpenShift cluster.
+
+== Requirements
+
+* Ansible 2.9
+* OpenShift 4.10
+
+== Role Variables
+
+List of variables used by the role. The ones marked as _required_ need to be added to the playbook.
+
+[cols="4*<.^",options=header]
+|===
+|Variable |Description | Required | Default 
+
+|kubeconfig_path | Path to the kubeconfig file | Yes | None
+
+|rhocp_user | OpenShift user | Yes | None
+
+|provisioner_ip | IP Address of the provisioner host | Yes | None
+
+|stf_ns | Namespace used to install STF-related operators | No | service-telemetry
+
+|stf_operator_name |Name of the STF operator. | No | service-telemetry-operator
+
+|stf_subscription_name |Name of the STF subscription. | No | service-telemetry-operator
+
+|stf_channel |Name of the STF operator channel. | No | stable-1.5
+
+|cert_manager_ns | Namespace used to install the Cert Manager operator | No | openshift-cert-manager-operator
+
+|cert_manager_operator_name |Name of the Cert Manager operator. | No | openshift-cert-manager-operator
+
+|cert_manager_subscription_name |Name of the Cert Manager subscription. | No | openshift-cert-manager-operator
+
+|cert_manager_channel |Name of the Cert Manager operator channel. | No | tech-preview
+
+|amq7_operator_name |Name of the Amq7 operator. | No | amq7-interconnect-operator
+
+|amq7_subscription_name |Name of the Amq7 subscription. | No | amq7-interconnect-operator
+
+|amq7_channel |Name of the Amq7 operator channel. | No | 1.10.x
+
+|prometheus_operator_name |Name of the Prometheus operator. | No | prometheus
+
+|prometheus_subscription_name |Name of the Prometheus subscription. | No | prometheus
+
+|prometheus_channel |Name of the Prometheus operator channel. | No | beta
+
+|prometheus_subscription_source |Prometheus operator subscription source. | No | operatorhubio-operators
+
+|elasticsearch_operator_name |Name of the Elasticsearch operator. | No | elasticsearch-eck-operator-certified
+
+|elasticsearch_subscription_name |Name of the Elasticsearch subscription. | No | elasticsearch-eck-operator-certified
+
+|elasticsearch_channel |Name of the Elasticsearch operator channel. | No | stable
+
+|elasticsearch_subscription_source |Elasticsearch operator subscription source. | No | certified-operators
+
+|===
+
+== Examples
+
+Example playbook to install STF getting required variables from the playbook_required_vars.yml file:
+
+[source, yaml]
+----
+- name: Playbook to install STF
+  hosts: provisioner_host
+  vars_file:
+    - playbook_required_vars.yml
+  roles:
+    - role: stf
+      state: present
+----
+
+Example playbook to uninstall STF getting required variables from the playbook_required_vars.yml file:
+
+[source, yaml]
+----
+- name: Playbook to uninstall STF
+  hosts: provisioner_host
+  vars_file:
+    - playbook_required_vars.yml
+  roles:
+    - role: stf
+      state: absent
+----
+
+== License
+
+TBD
+
+== Author Information
+
+Alaitz Mendiola <alaitz@redhat.com>

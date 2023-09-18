@@ -1,0 +1,11 @@
+export OCP_PULLSECRET_AUTHFILE='{{ local_secret_json }}'
+export LOCAL_REGISTRY={{ quay_fqdn }}
+export LOCAL_REGISTRY_IMAGE_TAG=olmidx
+
+echo "Change directory to {{ icsp_path }}"
+cd {{ icsp_path }}
+
+oc -a $OCP_PULLSECRET_AUTHFILE image mirror \
+   {{ upstream_url_registry }}/openshift4/ose-tools-rhel8:latest \
+   $LOCAL_REGISTRY/$LOCAL_REGISTRY_IMAGE_TAG/ose-tools-rhel8:latest
+

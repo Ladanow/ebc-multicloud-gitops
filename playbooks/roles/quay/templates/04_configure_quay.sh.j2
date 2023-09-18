@@ -1,0 +1,11 @@
+
+QUAYTOKEN=$(curl -X POST -k  https://{{ quay_fqdn }}/api/v1/user/initialize --header 'Content-Type: application/json' --data '{ "username": "{{ quay_super_user }}", "password":"{{ quay_password }}", "email": "dummy@quay.com", "access_token": true}' | jq -r '.access_token')
+
+
+curl -X POST -k --header 'Content-Type: application/json' -H "Authorization: Bearer $QUAYTOKEN" https://{{ quay_fqdn }}/api/v1/organization/ --data '{"name": "olmidx", "email": "olmidx@quay.com"}'
+curl -X POST -k --header 'Content-Type: application/json' -H "Authorization: Bearer $QUAYTOKEN" https://{{ quay_fqdn }}/api/v1/organization/ --data '{"name": "ospd", "email": "ospd@quay.com"}'
+curl -X POST -k --header 'Content-Type: application/json' -H "Authorization: Bearer $QUAYTOKEN" https://{{ quay_fqdn }}/api/v1/organization/ --data '{"name": "openstack", "email": "openstack@quay.com"}'
+curl -X POST -k --header 'Content-Type: application/json' -H "Authorization: Bearer $QUAYTOKEN" https://{{ quay_fqdn }}/api/v1/organization/ --data '{"name": "contrail", "email": "contrail@quay.com"}'
+curl -X POST -k --header 'Content-Type: application/json' -H "Authorization: Bearer $QUAYTOKEN" https://{{ quay_fqdn }}/api/v1/organization/ --data '{"name": "cn2", "email": "cn2@quay.com"}'
+curl -X POST -k --header 'Content-Type: application/json' -H "Authorization: Bearer $QUAYTOKEN" https://{{ quay_fqdn }}/api/v1/organization/ --data '{"name": "telefonica", "email": "telefonica@quay.com"}'
+curl -X POST -k --header 'Content-Type: application/json' -H "Authorization: Bearer $QUAYTOKEN" https://{{ quay_fqdn }}/api/v1/organization/ --data '{"name": "support", "email": "support@quay.com"}'

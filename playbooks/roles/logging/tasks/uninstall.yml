@@ -1,0 +1,8 @@
+---
+- name: Delete projects
+  ansible.builtin.include_tasks: delete_project.yml
+  vars:
+    namespace: "{{ item }}"
+  loop:
+    - "{{ elasticsearch_ns }}"
+    - "{{ openshift_logging_ns }}"

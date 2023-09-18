@@ -1,0 +1,9 @@
+---
+# vars file for kafka
+
+kafka_operator_name: amq-streams
+kafka_channel: amq-streams-2.3.x
+kafka_api_version: kafka.strimzi.io/v1beta2
+
+secrets_path: kafka-secrets
+scripts_path: kafka-scripts

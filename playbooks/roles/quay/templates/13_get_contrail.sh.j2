@@ -1,0 +1,118 @@
+#!/bin/bash
+
+export tag='21.3.93'
+export LOCAL_REGISTRY='{{ quay_fqdn }}'
+export LOCAL_SECRET_JSON='{{ local_secret_json }}'
+export remote_registry='{{ remote_quay_fqdn }}/contrail'
+
+echo "Change directory to {{ icsp_path }}"
+cd {{ icsp_path }}
+
+is_5_0=$(echo "$tag" | grep -c '5\.0')
+
+if [[ $is_5_0 == 1 ]] ; then
+  topology_name='contrail-analytics-topology'
+else
+  topology_name='contrail-analytics-snmp-topology'
+fi
+
+function is_less_than() {
+  local tag=$1
+  local val=$2
+  awk -v val="$val" '{
+  n = split($0, arr, "-");
+  for (i = 0; ++i <= n;){
+      k = split(arr[i], arr_inner, ".");
+      for (j=0; ++j <= k;){
+        if(match(arr_inner[j], /^[0-9]{4,}$/) && arr_inner[j] < val){
+          print 1;
+          exit 0;
+        }
+        if(match(arr_inner[j], /^r[0-9]{4}$/) && substr(arr_inner[j], 2) < val){
+            print 1;
+            exit 0;
+        }
+      }
+  };
+  print 0;
+}' <<< $tag
+}
+
+# check if not 5.x
+is_5_x=$(awk '{
+  n = split($0, arr, "-");
+  for (i = 0; ++i <= n;){
+    if(match(arr[i], /^5\.[0-2]{1,}/)){
+      print 1;
+      exit 0;
+    }
+  };
+  print 0;
+}' <<< $tag)
+
+if [[ "$is_5_x" == 1 ]] ; then
+  stunnel=''
+else
+  stunnel='contrail-external-stunnel'
+fi
+
+# Check if tag contains numbers less than 2002
+is_less_2002=$(is_less_than $tag 2002)
+# Check if tag contains numbers less than 2008
+is_less_2008=$(is_less_than $tag 2008)
+
+provisioner=""
+# if tag is latest or contrail version >= 2002 add provisioner container
+if [[ "$is_5_x" == 0 ]] && [[ "$is_less_2002" == 0 || "$tag" =~ "latest" || "$tag" =~ "master" || "$tag" =~ "dev" ]]; then
+  provisioner="contrail-provisioner"
+fi
+
+contrail_tools=""
+# if tag is latest or contrail version >= 2008 add contrail-tools container
+if [[ "$is_5_x" == 0 ]] && [[ "$is_less_2008" == 0 || "$tag" =~ "latest" || "$tag" =~ "master" || "$tag" =~ "dev" ]]; then
+  contrail_tools="contrail-tools"
+fi
+
+for image in \
+contrail-analytics-alarm-gen \
+contrail-analytics-api \
+contrail-analytics-collector \
+contrail-analytics-query-engine \
+contrail-analytics-snmp-collector \
+${topology_name} \
+contrail-external-cassandra \
+contrail-controller-config-api \
+contrail-controller-config-devicemgr \
+contrail-controller-config-schema \
+contrail-controller-config-svcmonitor \
+contrail-controller-control-control \
+contrail-controller-control-dns \
+contrail-controller-control-named \
+contrail-openstack-heat-init \
+contrail-external-kafka \
+contrail-openstack-neutron-init \
+contrail-node-init \
+contrail-nodemgr \
+contrail-openstack-compute-init \
+contrail-external-rabbitmq \
+contrail-external-redis \
+contrail-status \
+contrail-vrouter-agent \
+contrail-vrouter-agent-dpdk \
+contrail-vrouter-agent \
+contrail-vrouter-kernel-init-dpdk \
+contrail-vrouter-kernel-init \
+contrail-controller-webui-job \
+contrail-controller-webui-web \
+contrail-external-zookeeper \
+contrail-kubernetes-cni-init \
+contrail-kubernetes-kube-manager \
+contrail-controller-config-dnsmasq \
+${stunnel} \
+${provisioner} \
+${contrail_tools}
+do
+  echo "Mirroring image $image with tag $tag\n"
+      oc -a $LOCAL_SECRET_JSON image mirror ${remote_registry}/$image:${tag} $LOCAL_REGISTRY/contrail/$image
+done
+

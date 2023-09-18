@@ -1,0 +1,4 @@
+---
+# defaults file for kafka
+
+kafka_ns: kafka-cluster

@@ -1,0 +1,45 @@
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: {{ openshift_logging_ns }}
+spec:
+  outputs:
+   - name: infra-logs
+     type: kafka
+     url: tls://mano-kafka-cluster-kafka-bootstrap-kafka-cluster.apps.{{ mgmt_cluster_name }}.{{ domain }}:443/mano1-infra-logs
+     secret:
+       name: kafka-secret
+   - name: audit-logs
+     type: kafka
+     url: tls://mano-kafka-cluster-kafka-bootstrap-kafka-cluster.apps.{{ mgmt_cluster_name }}.{{ domain }}:443/mano1-audit-logs
+     secret:
+       name: kafka-secret
+   - name: app-logs
+     type: kafka
+     url: tls://mano-kafka-cluster-kafka-bootstrap-kafka-cluster.apps.{{ mgmt_cluster_name }}.{{ domain }}:443/mano1-app-logs
+     secret:
+       name: kafka-secret
+  pipelines:
+   - name: mano1-infra-logs
+     inputRefs:
+     - infrastructure
+     outputRefs:
+     - infra-logs
+     labels:
+       logType: "infra"
+   - name: mano1-audit-logs
+     inputRefs:
+     - audit
+     outputRefs:
+     - audit-logs
+     labels:
+       logType: "audit"
+   - name: mano1-app-logs
+     inputRefs:
+     - application
+     outputRefs:
+     - app-logs
+     labels:
+       logType: "app"
+

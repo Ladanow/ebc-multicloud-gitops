@@ -1,0 +1,5 @@
+---
+# defaults file for monitoring
+
+monitoring_ns: "openshift-monitoring"
+adapter_ns: "prom-kafka-adapter"

@@ -1,0 +1,66 @@
+= monitoring role
+
+This role allows to install/uninstall monitoring tools in an OpenShift cluster.
+
+== Requirements
+
+* Ansible 2.9
+* OpenShift 4.10
+
+== Role Variables
+
+List of variables used by the role. The ones marked as _required_ need to be added to the playbook.
+
+[cols="4*<.^",options=header]
+|===
+|Variable |Description | Required | Default 
+
+|kubeconfig_path | Path to the kubeconfig file | Yes | None
+
+|rhocp_user | OpenShift user | Yes | None
+
+|provisioner_ip | IP Address of the provisioner host | Yes | None
+
+|domain | Domain | Yes | None
+
+|secrets_path |Directory that stores the secrets used by the automation. | No | ~/secrets
+
+|monitoring_ns |Namespace used to install the monitorint tools. | No | prom-kafka-adapter
+
+|===
+
+== Examples
+
+Example playbook to install monitoring tools getting required variables from the playbook_required_vars.yml file:
+
+[source, yaml]
+----
+- name: Playbook to install monitoring tools
+  hosts: provisioner_host
+  vars_file:
+    - playbook_required_vars.yml
+  roles:
+    - role: monitoring
+      state: present
+----
+
+Example playbook to uninstall monitoring tools getting required variables from the playbook_required_vars.yml file:
+
+[source, yaml]
+----
+- name: Playbook to uninstall monitoring tools
+  hosts: provisioner_host
+  vars_file:
+    - playbook_required_vars.yml
+  roles:
+    - role: monitoring
+      state: absent
+----
+
+== License
+
+TBD
+
+== Author Information
+
+Alaitz Mendiola <alaitz@redhat.com>

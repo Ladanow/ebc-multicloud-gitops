@@ -1,0 +1,29 @@
+---
+# vars file for stf
+
+cert_manager_operator_name: openshift-cert-manager-operator
+cert_manager_channel: stable-v1
+cert_manager_subscription_name: openshift-cert-manager-operator
+
+amq7_operator_name: amq7-interconnect-operator
+amq7_channel: 1.10.x
+amq7_subscription_name: amq7-interconnect-operator
+
+prometheus_operator_name: prometheus
+prometheus_channel: beta
+prometheus_subscription_name: prometheus
+prometheus_subscription_source: operatorhubio-operators
+
+grafana_operator_name: grafana-operator
+grafana_channel: v4
+grafana_subscription_name: grafana-operator
+grafana_subscription_source: operatorhubio-operators
+
+eck_operator_name: elasticsearch-eck-operator-certified
+eck_channel: stable
+eck_subscription_name: elasticsearch-eck-operator-certified
+eck_subscription_source: certified-operators
+
+stf_operator_name: service-telemetry-operator
+stf_channel: stable-1.5
+stf_subscription_name: service-telemetry-operator

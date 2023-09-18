@@ -1,0 +1,1 @@
+oc get pods -o custom-columns=POD:.metadata.name --no-headers -n {{ quay_ns }} | grep -v manocluster-registry-quay-app-upgrade | xargs -i oc wait --namespace={{ quay_ns }} --for=condition=Ready pod/{} --timeout=600s

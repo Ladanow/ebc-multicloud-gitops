@@ -1,0 +1,35 @@
+---
+- name: Pause for 30 secs
+  ansible.builtin.pause:
+    seconds: 30
+
+      #
+      # Sometimes it may take more than 30 seconds
+      # for install plan to be created
+      #
+- name: Wait for install plan(s) to be created
+  ansible.builtin.shell: |
+    set -o pipefail
+    oc -n  {{ namespace }} get ip
+  register: ip
+  retries: 60
+  delay: 30
+  until: "'install-' in ip.stdout"
+  changed_when: false
+
+- name: Approve the install plan(s)
+  ansible.builtin.shell: |
+    set -o pipefail
+    for IP in $(oc -n  {{ namespace }} get ip | grep Manual | awk '{print $1}'); do
+        oc -n {{ namespace }} patch ip $IP --type=merge -p '{"spec":{"approved":true}}'
+    done
+
+- name: Check installed operator {{ operator_name }}
+  ansible.builtin.shell: |
+    set -o pipefail
+    oc get csv -n {{ namespace }} | grep {{ operator_name }}
+  register: csv
+  retries: 60
+  delay: 30
+  until: "'Succeeded' in csv.stdout"
+  changed_when: false

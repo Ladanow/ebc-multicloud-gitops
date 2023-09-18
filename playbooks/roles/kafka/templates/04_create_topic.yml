@@ -1,0 +1,13 @@
+apiVersion: "{{ kafka_api_version }}"
+kind: KafkaTopic
+metadata:
+  labels:
+    strimzi.io/cluster: mano-kafka-cluster
+  name: "{{ item }}"
+  namespace: "{{ kafka_ns }}"
+spec:
+  config:
+    retention.ms: 600000
+  partitions: 1
+  replicas: 1
+  topicName: "{{ item }}"

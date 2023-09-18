@@ -1,0 +1,385 @@
+= Management cluster configuration
+
+These ansible playbooks / roles can be used to configure an OpenShift 4.12 cluster with the different operators and applications that are required for the management cluster.
+
+== Pre Requisites
+
+* OpenShift 4.12 cluster installed successfully. The OCP cluster can be installed using Crucible (assisted installer)
+* The bastion login account that is being used to run the playbooks need to already have logged into the OCP API, since the playbooks run some `oc` CLI commands
+* The deployed OCP cluster should be available on the Assisted Installer (AI), since the playbooks query the cluster using AI API in order to retrieve the cluster login credentials
+* The following packages need to be installed on the bastion account that is running the playbooks:
+
+[source,bash]
+----
+ansible-galaxy collection install kubernetes.core
+pip install kubernetes
+pip install pyYAML
+pip install jsonpatch
+----
+
+* Manifest file for Satellite
+This role requires a valid manifest file for the Satellite with the subscription allocation. To create the subscription allocation with the needed subscriptions please use this link:https://access.redhat.com/management/subscription_allocations/new[link]. Download the manifest and store it in the `files` directory.
+
+== Configuration
+
+The configuration of the management cluster with all the mandatory, conditional and optional components is achieved via two files: `vars/common.yml` and `vars/secret.yml`. Additionally a variable file (`vars/satellite.yml`) is used to capture the parameters needed to configure satellite. The satellite parameters can be merged in `vars/common.yml` and `vars/secret.yml` if desired, but for now they are kept separate for ease of management.
+
+=== vars/common.yml
+
+[cols="3*<.^",options=header]
+|===
+|Variable |Description | Default 
+
+|provisioner_ip | bastion host's IP address - This is where AI and HTTP server will be listening to | localhost
+
+|deploy_idm | Speficies whether to deploy IDM or not | true
+
+|deploy_satellite | Speficies whether to deploy Satellite or not | true
+
+|deploy_gitlab |Speficies whether to deploy GitLAB or not | true
+
+|deploy_stf | Speficies whether to deploy STF or not | true
+
+|deploy_metallb | Speficies whether to deploy metallb or not | true
+
+|kubeconfig_path | Path to the kubeconfig file | ~/kubeconfig
+
+|pull_secret_path | Path to the pull secret file | ~/pull_secret.txt
+
+|apps_ns | Namespace used to install the applications that will run in the management cluster. | mano-apps
+
+|apps_nad_name | Name of the NetworkAttachmentDefinition CR used for the application traffic.  | apps-nad
+
+|automation_ns | Namespace used to install the automation tools that will be used in the management cluster. | mano-automation
+
+|automation_nad_name | Name of the NetworkAttachmentDefinition CR used for the automation tools traffic. | automation-nad
+
+|fabric_ns | Namespace used to install the juniper fabric manager. | fabric-manager
+
+|fabric_nad_name | Name of the NetworkAttachmentDefinition CR used for the fabric manager. | fabric-mgr-nad
+
+|bond1_name | logical name for the bond for MULTUS | bond1
+
+|bond1_slave1 | Interface name for first bond member |
+
+|bond1_slave2 | Interface name for second bond member |
+
+|fabric_mgr_interface | Interface name for GE interface for fabric manager VLAN |
+
+|odf_nodes | List of nodes names that need to be labeled for ODF |
+
+|max_device_count | Number of storage disks (OSDs) per ODF node |
+
+|total_osds | Total number of OSDs in ODF cluster |
+
+|dns_server_ip | IP address of DNS server |
+
+|idm1_ip | IP address of the first IDM VM in the cluster |  
+
+|idm1_hostname | Hostname of the first IDM VM in the cluster |  
+
+|idm2_ip | IP address of the second IDM VM in the cluster | 
+
+|idm2_hostname | Hostname of the second IDM VM in the cluster | 
+
+|ipaserver | FQDN of existing IDM server in the other MANO cluster, to be used IPA server |
+
+|ipareplicas | List of FQDNs for new IDM replicas to be created in the cluster |
+
+|satellite_ip | IP address of the satellite VM |
+
+|satellite_hostname | Hostname of satellite VM |
+
+|satellite_fqdn | Satellite server FQDN |
+
+|remote_satellite_fqdn | FQDN of satellite server in remote MANO cluster |
+
+|manifest_path | Path to the satellite manifest file | ~/manifest.zip
+
+|idm_integration | Specifies whether the Satellite integrates with IDM or not | true
+
+|quay_fqdn | FQDN of quay in the local MANO cluster |
+
+|remote_quay_fqdn | FQDN of quay in remote MANO cluster |
+
+|remote_quay_cert_dir | Path to the certificate for Quay in remote  MANO cluster |
+
+|git_ip | IP address of gitlab VM |
+
+|git_hostname | Hostname of gitlab VM |
+|===
+
+=== vars/secret.yml
+
+All the sensitive data must be stored in the `vars/secrets.yml` file. To ease the creation of this file, we provide the `vars/secrets.yml.sample` file that you can edit and rename. This file must be encrypted using `ansible-vault`. The `.gitignore` file in this repository prevents pushing the `vars/secrets.yml` file, to the repository.
+
+This is how the `secrets.yml.sample` file looks:
+
+[cols="3*<.^",options=header]
+|===
+|Variable |Description | Default 
+
+|rhocp_user | username to login to OCP cluster | 
+
+|rhocp_password | Password to login to OCP cluster | 
+
+|domain | realm to use for cluster |
+
+|mgmt_cluster_name | OCP cluster name |
+
+|server | OCP API URL for the local cluster | 
+
+|apps_vlan | VLAN ID for mano-apps network | 
+
+|apps_subnet_len | Subnet length for mano-apps CIDR |
+
+|apps_subnet_gw | Gateway address for mano-apps network | 
+
+|automation_vlan | VLAN ID for automation network | 
+
+|automation_subnet_len | Subnet length for automation CIDR | 
+
+|automation_subnet_gw | Gateway address for automation network
+
+|ansible_admin_user | admin username for ansible | 
+
+|quay_user | Username for quay login (must be defined in IDM) | 
+
+|quay_password | Password for quay user (must match password in IDM) | 
+
+|quay_super_user | Quay super user account | 
+
+|ipaadmin_password | Admin password for IPA server
+
+|ipa_dir_mgr_pass | IPA directory manager password
+
+|idm_password | password to login to IDM VM | 
+
+|idm_user | username to login to IDM VM | 
+
+|idm_activation_key | satellite activation key for IDM subscription |
+
+|idm_ocp_bind_password | Password used by OCP to query IDM for user credentials | 
+
+|satellite_admin_username | admin username for satellite login (VM and GUI) |
+
+|satellite_admin_password | password for satellite admin user | 
+
+|satellite_org_name | organization name for satellite configuration | default
+
+|ansible_user | The user name that ansible would use to configure the satellite VM | 
+
+|rhsm_username | Red Hat subscription management user name to register satellite |
+
+|rhsm_password | Red Hat subscription management password |
+
+|git_user | username to login to git VM | 
+
+|git_password | password to login to git VM | 
+
+|git_root_password | root password for gitlab server | 
+
+|git_activation_key | satellite activation key for git vm subscription | 
+
+|ztp_git_url | URL for ZTP repo | 
+
+|ztp_git_username | username for accessing GIT ZTP repo |
+
+|ztp_git_token | git acess token
+
+|kafka_topic_list | List of kafka topics | 
+
+|lb_pool_start | Starting IP address of metalLB pool | 
+
+|lb_pool_end | Ending IP address of metalLB pool | 
+|===
+
+=== vars/satellite.yml
+
+[cols="3*<.^",options=header]
+|===
+|Variable |Description | Default
+
+| satellite_ip | IP address of satellite VM |
+
+| satellite_hostname | Hostname for satellite VM |
+
+| satellite_fqdn | FQDN for satellite VM |
+
+| remote_satellite_fqdn | FQDN of the satellite in the other MANO cluster |
+
+| manifest_path | Path to the directory containing the satellite manifest |
+
+| manifest_file | Manifest file name | 
+
+| idm_integration | Does satellite need to be integrated with IDM? true/false |
+
+| datacenter | Location where satelltie is being installed |
+
+| dns_domain | DNS realm for satellite | 
+
+| wait_retries | Loop control timers | 
+
+| wait_delay | Loop control timers |
+
+| wait_timeout | Loop control timers |
+
+| wait_deploy_timeout | Loop control timers |
+
+| hostname | hostname to be assigned to satellite | 
+
+| proxy_hostname | hostname of the proxy server for internet connectivity |
+
+| proxy_port | port number for proxy server | 
+
+| rhsm.rhsm_org_id | Organization ID to assign to satellite | 
+
+| rhsm.rhsm_repositories.disabled | List of repositories to disable |
+
+| rhsm.rhsm_repositories.enabled | List of repositories to enable |
+
+| rhsm.rhsm_repositories.packages | List of packages to install | 
+
+| rhsm.rhsm_repositories.services | List of services to enable |
+
+| firewalld.firewalld_zone | Name of firewall zone | 
+
+| firewalld.firewalld_ports_open | List of ports to open in firewall | 
+
+| satellite_infra.listen_address | FQDN for satellite VM |
+
+| satellite_infra.organization | Organization ID to assign to satellite |
+
+| satellite_infra.location | Location where satelltie is being installed |
+
+| satellite.server_url | https://{{ satellite_fqdn }}/ | 
+
+| satellite.organization | satellite_infra.organization | 
+
+| satellite.location | satellite_infra.location |
+
+| satellite.admin_username | Satellite admin username |
+
+| satellite.admin_password | Satellite admin password |
+
+| satellite.delete_host_upon_unregister | Should host be deleted from satellite? true/false |
+
+| satellite.manifest.state | Is manifest available? present/absent |
+
+| satellite.manifest.filename | Satellite manifest filename
+
+| satellite.manifest.remote_prefix | HTTP server URL for satellite manifest | 
+
+| satellite.manifest.temp_dir | Name of temporary directory to extract the manifest | 
+
+| satellite.options | List of options for satellite installation / feature enablement | 
+
+| satellite.enable_epel | Should epel repository be enabled? true / false |
+
+| satellite.lifecycle_environments | List of lifecycle environments to create | 
+
+| satellite.activation_keys | List of activation keys to create | 
+
+| satellite.repository_sets | List of repository sets to create | 
+
+| satellite.content_views | List of content views to create | 
+|===
+
+=== Role specific variables
+In addition to the above mentioned configuration files, the following role specific variable files also need to be editied:
+
+==== roles/idm/templates/05_oauth.yml
+Replace all occurances of `dc=tmeprj2,dc=comm,dc=red,dc=ibm,dc=gsc` with the site specific `dc` values.
+
+==== roles/idm/templates/06_groupSync.yml.j2
+Replace all occurances of `dc=tmeprj2,dc=comm,dc=red,dc=ibm,dc=gsc` with the site specific `dc` values.
+
+==== roles/idm/templates/07_whitelist.txt.j2
+Replace all occurances of `dc=tmeprj2,dc=comm,dc=red,dc=ibm,dc=gsc` with the site specific `dc` values.
+
+Also ensure that the group names match the group names created in IDM.
+
+== Management cluster automated deployment
+
+Use the crucible playbooks to deploy the OCP cluster. Refer to the crucible README file for instructions.
+
+== Management cluster automated configuration
+
+The playbooks in this repository will deploy all the mandatory and conditional components of the architecture. Additionally, it can also deploy the optional components, by specifying it in the `vars/common.yml` file:
+
+[cols="4*<.^",options=header]
+|===
+|Variable |Description | Required | Default 
+
+|deploy_idm | Deploy IDM | No | true
+
+|deploy_satellite | Deploy Satellite | No | true
+
+|deploy_gitlab | Deploy GitLab | No | true
+
+|deploy_stf | Deploy STF | No | true
+
+|deploy_metallb | Deploy MetalLB | No | true
+
+|===
+
+Once the variable files have been edited to provide the correct parameters for cluster configuration, the playbook can be started with the following command:
+
+[source, bash]
+----
+$ ansible-playbook deploy_management_cluster.yml
+----
+
+You can also deploy specific components, making use of the `--tags` option, as follows:
+
+[source, bash]
+----
+$ ansible-playbook deploy_management_cluster.yml --tags TAGS
+----
+
+Where the available TAGs are the following ones:
+
+* net_policy: Configure the network policy template
+* machine_config: Configures the bond interfaces on the nodes and applies other base machine configurations
+* openshift_virtualization: Deploys OpenShift Virtualization
+* openshift_data_foundation: Deploys OpenShift Data Foundation
+* ztp: Deploys ACM, ArgoCD, TALM and Ansible
+* monitoring: Deploys Kafka and the Prometheus Kafka adapter
+* logging: Deploys OpenShift Logging
+* metallb: Deploy metalLB
+* stf: Deploys Service Telemetry Framework
+* idm: Deploys IDM
+* satellite: Deploys Satellite
+* quay: Deploys Quay
+* gitlab: Deploys gitlab
+
+== Caveats
+
+=== MachineConfig role
+
+The `machineconfig` role applies performance profile to the master and worker nodes. The performance profile will need to be tweaked based on the number of CPUs available on the servers being used.
+
+Edit the files `roles/machine_config/templates/03_performance_profile_master.yml` and `roles/machine_config/templates/04_performance_profile_worker.yml` to update the `spec.cpu.reserved` and `spec.cpu.isolated` parameters.
+
+=== Satellite role
+
+* The `Configure Satellite` task would fail becuase the pool IDs will not match. This is becuase the pool IDs are not known prior to applying the manifest to satellite server. Hence we cannot have the correct pool IDs in the inventory file before starting the deployment. 
+** The current solution is to put the correct pool IDs in the inventory file, once the playbook fails. The error message will show the correct pool IDs to use.
+** A better solution is being worked and may be available soon
+
+* The `Install Satellite` task is not idempotent. Becuase of that once the playbook fails at the `Configure Satellite` task, the `Install Satellite` task will need to be commented out before re-running the playbook.
+** Edit the file `roles/satellite/tasks/install.yml` and comment out the `Run install satellite` task on line 110.
+
+=== Quay role
+
+Once Quay is installed, organizations need to be created in Quay before images can be uploaded to Quay. This step is not automated today. Once Quay is installed the playbooks pause for 5 minutes, for the user to go ahead and manually create the organizations in Quay. Once the organizations are created, the playbook will automatically start uploading the images to the the appropriate organization.
+
+Create the following organizations in Quay:
+* olmidx
+* ospd
+* openstack
+* contrail
+* cn2
+* telefonica
+* ocp
+

@@ -1,0 +1,16 @@
+---
+- name: Create operator group "{{ operator_group_name }}"
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig_path }}"
+    username: "{{ rhocp_user }}"
+    password: "{{ rhocp_password }}"
+    state: present
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: "{{ operator_group_name }}"
+        namespace: "{{ namespace }}"
+      spec:
+        targetNamespaces:
+          - "{{ namespace }}"

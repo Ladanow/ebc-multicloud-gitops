@@ -1,0 +1,37 @@
+---
+# vars file for quay
+
+quay_operator_name: quay-operator
+quay_channel: stable-3.8
+
+upstream_url_registry: "registry.redhat.io"
+
+quay_scripts:
+  - 01_default_storage_class.sh
+  - 02_create_secret.sh
+  - 03_check_quay_instance.sh
+  - 04_configure_quay.sh
+
+quay_upload_scripts:
+  - 05_update_pull_secret.sh
+  - 06_populate_metal_repo.sh
+  - 07_get_helm_tools.sh
+  - 08_get_ospd_operator.sh
+  - 09_get_operators.sh
+  - 10_get_osp_containers.sh
+  - 11_get_prometheus_kafka_adapter.sh
+  - 12_get_jet_pack.sh
+  - 13_get_contrail.sh
+  - 14_get_cn2.sh
+
+quay_pull_secret_script:
+  - 15_update_pull_secret.sh
+
+quay_config_files:
+  - config_ldap.yml
+  - config_database.yml
+
+local_secret_json: pull-secret-update.json
+
+scripts_path: quay-scripts
+icsp_path: ICSP

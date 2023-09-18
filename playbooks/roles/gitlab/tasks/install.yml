@@ -1,0 +1,29 @@
+---
+- name: Include create_resource.yml
+  ansible.builtin.include_tasks: create_resource.yml
+  vars:
+    src: 01_git_vm.yml
+
+- name: Wait for ssh connection to be open on Git
+  ansible.builtin.wait_for:
+    port: 22
+    host: "{{ git_ip }}"
+    timeout: 600
+
+- name: Copy ssh id for Git  Replica VM
+  ansible.builtin.command: sshpass -p "{{ git_password }}" ssh-copy-id -o StrictHostKeyChecking=no {{ git_user }}@{{ git_ip }}
+  changed_when: true
+
+#- name: Add host to inventory
+#  ansible.builtin.add_host:
+#    name: "{{ git_fqdn }}"
+#    ansible_user: "{{ git_user }}"
+#    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+#    groups: gitlab
+
+- name: Configure VM
+  become: true
+  delegate_to: "{{ git_fqdn }}"
+  block:
+    - name: Configure the gitlab vm
+      ansible.builtin.include_tasks: configure_vm.yml

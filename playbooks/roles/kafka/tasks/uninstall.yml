@@ -1,0 +1,19 @@
+---
+- name: Delete directory to store secrets
+  ansible.builtin.file:
+    path: "{{ secrets_path }}"
+    state: absent
+
+- name: Delete resources
+  ansible.builtin.include_tasks: delete_resource.yml
+  vars:
+    src: "{{ item }}"
+  loop:
+    - 04_create_topic.yml
+    - 02_kafka_persistent.yml
+    - 01_role_bindings.yml
+
+- name: Include delete_project.yml
+  ansible.builtin.include_tasks: delete_project.yml
+  vars:
+    namespace: "{{ kafka_ns }}"
