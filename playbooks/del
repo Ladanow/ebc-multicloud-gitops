@@ -1,9 +1,0 @@
-apiVersion: k8s.cni.cncf.io/v1
-kind: NetworkAttachmentDefinition
-metadata:
-  name: bridge-nad410
-  namespace: mgmt-apps
-spec:
-  config: '{ "cniVersion": "0.3.1", "name": "bridge-nad410", "type": "bridge", "bridge":
-    "br-apps2", "ipam": { "type": "static", "addresses": [ { "address": "10.0.41.0/25"
-    } ] }, "capabilities": { "ips": true } }'
