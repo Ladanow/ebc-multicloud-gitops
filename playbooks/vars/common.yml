@@ -1,7 +1,7 @@
 # Provisioner
 
 provisioner_ip: 192.168.32.4
-#vars_path: /home/ocp-mano/dallas20/mgmt-config/vars
+vars_path: /home/mano/ebc-multicloud-gitops/playbooks/vars
 
 # Optional Components
 
@@ -25,16 +25,13 @@ dns_server_ip: 192.168.32.4
 
 # IDM
 
-#idm1_ip: 172.31.254.83
-#idm1_hostname: idm1mano2
+idm1_ip: 10.0.41.41
+idm1_hostname: idm1mgmt1
 #idm2_ip: 172.31.254.84
 #idm2_hostname: idm2mano2
 
     # Going to use MGMT-1 IDM as server
-#ipaserver: idm.tmeprj2.comm.red.ibm.gsc
-#ipareplicas:
-#  - idm1mano2.tmeprj2.comm.red.ibm.gsc
-#  - idm2mano2.tmeprj2.comm.red.ibm.gsc
+ipaserver: idm1mgmt1.npss.bos2.lab
 
 # QUAY
 #quay_fqdn: quay.mgmt.tmeprj2.comm.red.ibm.gsc

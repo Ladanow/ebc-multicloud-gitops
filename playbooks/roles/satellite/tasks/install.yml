@@ -1,3 +1,8 @@
+#
+# Need to fix:
+#   1) Need to disable simple content access after importing manifest
+#   2) Need to configure proxy for satellite
+#
 ---
 - name: Install ansible collection - oasis
   ansible.builtin.command: ansible-galaxy collection install oasis_roles.system:==1.3.0
@@ -25,18 +30,6 @@
   notify:
     - Restart http store
 
-#- name: Include create_resource.yml
-#  ansible.builtin.include_tasks: create_resource.yml
-#  vars:
-#    src: 01_satellite_vm.yml
-#    ansible_python_interpreter: /usr/bin/python3.9
-#
-#- name: Wait for ssh connection to be open on Satellite VM
-#  ansible.builtin.wait_for:
-#    port: 22
-#    host: "{{ satellite_ip }}"
-#    timeout: 300
-#
 - name: Copy ssh ID for Satellite VM
   ansible.builtin.command: sshpass -p "{{ satellite_admin_password }}" ssh-copy-id -o StrictHostKeyChecking=no {{ satellite_admin_username }}@{{ satellite_ip }}
   changed_when: true
@@ -46,8 +39,6 @@
     name: "{{ satellite_fqdn }}"
     ansible_user: "{{ satellite_admin_username }}"
     ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
-      #ansible_python_interpreter: "/usr/bin/python"
-      #interpreter_python: "/usr/bin/python"
     groups: satellite
 
 - name: Groups of tasks delegated to satellite VM
@@ -57,10 +48,12 @@
     
     - name: Run Configure satellite
       ansible.builtin.include_tasks: configure_satellite.yml
+      vars:
+        ansible_python_interpreter: /usr/bin/python3.9
   become: yes
   become_user: root
   delegate_to: "{{ satellite_fqdn }}"
     
-- name: Include integrate_with_idm.yml
-  ansible.builtin.include_tasks: integrate_with_idm.yml
-  when: idm_integration
+#- name: Include integrate_with_idm.yml
+#  ansible.builtin.include_tasks: integrate_with_idm.yml
+#  when: idm_integration

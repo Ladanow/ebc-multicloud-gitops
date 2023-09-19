@@ -1,18 +1,4 @@
 ---
-- name: Enable repo on bastion
-  community.general.rhsm_repository:
-    name: rhel-9-for-x86_64-appstream-rpms
-    state: enabled
-  become: true
-  become_method: sudo
-
-- name: Install IPA package on bastion
-  ansible.builtin.dnf:
-    name: ansible-freeipa
-    state: present
-  become: true
-  become_method: sudo
-
 - name: Generate dynamic inventory
   block:
     - name: Add host to group ipaserver
@@ -21,98 +7,37 @@
         ansible_user: "{{ idm_user }}"
         groups: ipaservers
 
-    - name: Add host(s) to group ipareplicas
-      ansible.builtin.add_host:
-        name: "{{ item }}"
-        ansible_user: "{{ idm_user }}"
-        ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
-        ipareplica_servers: "{{ ipaserver }}"
-        groups: ipareplicas
-      loop: "{{ ipareplicas }}"
-
-- name: Create IDM 1 VM
-  ansible.builtin.include_tasks: create_resource.yml
-  vars:
-    src: 01_idm1_vm.yml
-
-- name: Wait for ssh connection to be open on IDM 1 VM
-  ansible.builtin.wait_for:
-    port: 22
-    host: "{{ idm1_ip }}"
-    timeout: 300
-
 - name: Copy ssh ID to IDM 1 VM
   ansible.builtin.command: sshpass -p "{{ idm_password }}" ssh-copy-id -o StrictHostKeyChecking=no {{ idm_user }}@{{ idm1_hostname }}.{{ domain }}
   changed_when: true
 
-- name: Create IDM 2 VM
-  ansible.builtin.include_tasks: create_resource.yml
-  vars:
-    src: 02_idm2_vm.yml
-
-- name: Wait for ssh connection to be open on IDM 2 VM
-  ansible.builtin.wait_for:
-    port: 22
-    host: "{{ idm2_ip }}"
-    timeout: 300
-
-- name: Copy ssh id to IDM  2 VM
-  ansible.builtin.command: sshpass -p "{{ idm_password }}" ssh-copy-id -o StrictHostKeyChecking=no {{ idm_user }}@{{ idm2_hostname }}.{{ domain }}
-  changed_when: true
-
-- name: Copy ssh id to IDM  server
-  ansible.builtin.command: sshpass -p "{{ idm_password }}" ssh-copy-id -o StrictHostKeyChecking=no {{ idm_user }}@{{ ipaserver }}
-  changed_when: true
-
-- name: Install IDM replica - IDM1
+- name: Install IDM server - IDM1
   become: true
   delegate_to: "{{ idm1_hostname }}.{{ domain }}"
   block:
-    - name: Prepare VM to install IDM Replica
-      ansible.builtin.include_tasks: prepare_idm_vm.yml
-      vars:
-        hostname: "{{ idm1_hostname }}.{{ domain }}"
+#    - name: Prepare VM to install IDM Server
+#      ansible.builtin.include_tasks: prepare_idm_vm.yml
+#      vars:
+#        hostname: "{{ idm1_hostname }}.{{ domain }}"
+#
+#    - name: Install IDM Server
+#      vars:
+#        ipaserver_domain: "{{ domain }}"
+#        ipaserver_realm: "{{ domain | upper }}"
+#        ipaserver_setup_dns: false
+#        ipaserver_auto_forwarders: false
+#        ipaadmin_principal: "{{ idm_user }}"
+#        ipaadmin_password: "{{ ipa_admin_password }}"
+#        ipadm_password: "{{ ipa_dir_mgr_pass }}"
+#      ansible.builtin.import_role:
+#        name: ipaserver
+#
+#    - name: Wait for 2 mins to IPA server to be ready
+#      ansible.builtin.pause:
+#        seconds: 120
 
-    - name: Install IDM replica
-      vars:
-        ipareplica_hostname: "{{ idm1_hostname }}.{{ domain }}"
-        ipareplica_servers: "{{ ipaserver }}"
-        ipaserver_domain: "{{ domain }}"
-        ipaserver_realm: "{{ domain | upper }}"
-        ipaserver_setup_dns: false
-        ipaserver_auto_forwarders: false
-        ipaclient_force_join: true
-        ipareplica_setup_ca: true
-        ipaadmin_principal: "{{ idm_user }}"
-        ipaadmin_password: "{{ ipa_admin_pass }}"
-        ipadm_password: "{{ ipa_dir_mgr_pass }}"
-      ansible.builtin.import_role:
-        name: ipareplica
-
-- name: Install IDM replica - IDM2
-  become: true
-  delegate_to: "{{ idm2_hostname }}.{{ domain }}"
-  block:
-    - name: Prepare VM to install IDM Replica
-      ansible.builtin.include_tasks: prepare_idm_vm.yml
-      vars:
-        hostname: "{{ idm2_hostname }}.{{ domain }}"
-
-    - name: Install IDM replica
-      vars:
-        ipareplica_hostname: "{{ idm2_hostname }}.{{ domain }}"
-        ipareplica_servers: "{{ ipaserver }}"
-        ipaserver_domain: "{{ domain }}"
-        ipaserver_realm: "{{ domain | upper }}"
-        ipaserver_setup_dns: false
-        ipaserver_auto_forwarders: false
-        ipaclient_force_join: true
-        ipareplica_setup_ca: true
-        ipaadmin_principal: "{{ idm_user }}"
-        ipaadmin_password: "{{ ipa_admin_pass }}"
-        ipadm_password: "{{ ipa_dir_mgr_pass }}"
-      ansible.builtin.import_role:
-        name: ipareplica
+    - name: Create IDM groups and users
+      ansible.builtin.include_tasks: create_idm_users_groups.yml
 
 - name: OCP to IDM Integration
   block:
@@ -149,6 +74,7 @@
       ansible.builtin.include_tasks: create_resource.yml
       vars:
         src: 05_oauth.yml
+        ansible_python_interpreter: /usr/bin/python3.9
 
     - name: Run script to enable LDAP group synchronization
       ansible.builtin.script:

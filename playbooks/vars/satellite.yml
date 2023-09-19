@@ -116,7 +116,7 @@ satellite:
       lifecycle_environment: dev
       releasever: '8.4'
       subscriptions:
-        - osp_pool_id: 2c9f7e92876bbb6401876bc3e6f64155
+        - osp16_pool_id: 2c9f7e92876bbb6401876bc3e6f64155
       content_overrides:
         - label: rhel-8-for-x86_64-baseos-eus-rpms
           override: enabled
@@ -141,7 +141,27 @@ satellite:
       lifecycle_environment: dev
       releasever: '9.2'
       subscriptions:
-        - osp_pool_id: 2c9f7e92876bbb6401876bc3e6f64155
+        - osp17_pool_id: 2c9f7e92876bbb6401876bc3e6f64155
+      content_overrides:
+        - label: rhel-9-for-x86_64-baseos-eus-rpms
+          override: enabled
+        - label: rhel-9-for-x86_64-appstream-eus-rpms
+          override: enabled
+        - label: rhel-9-for-x86_64-highavailability-eus-rpms
+          override: enabled
+        - label: openstack-17.1-for-rhel-9-x86_64-rpms
+          override: enabled
+        - label: fast-datapath-for-rhel-9-x86_64-rpms
+          override: enabled
+        - label: rhceph-6-tools-for-rhel-9-x86_64-rpms
+          override: enabled
+    # IDM
+    - name: idm-dev-rhel9
+      content_view: rhel9
+      lifecycle_environment: dev
+      releasever: '9.2'
+      subscriptions:
+        - idm_pool_id: 2c9f7e92876bbb6401876bc3e6ef4152
       content_overrides:
         - label: rhel-9-for-x86_64-baseos-rpms
           override: enabled
@@ -152,26 +172,6 @@ satellite:
         - label: rhel-9-for-x86_64-appstream-eus-rpms
           override: enabled
         - label: rhel-9-for-x86_64-highavailability-eus-rpms
-          override: enabled
-        - label: fast-datapath-for-rhel-9-x86_64-rpms
-          override: enabled
-        - label: openstack-beta-for-rhel-9-x86_64-rpms
-          override: enabled
-        - label: openstack-beta-deployment-tools-for-rhel-9-x86_64-rpms
-          override: enabled
-        - label: rhceph-6-tools-for-rhel-9-x86_64-rpms
-          override: enabled
-    # IDM
-    - name: idm-dev-rhel9
-      content_view: rhel9
-      lifecycle_environment: dev
-      releasever: '9'
-      subscriptions:
-        - idm_pool_id: 2c9f7e92876bbb6401876bc3e6ef4152
-      content_overrides:
-        - label: rhel-9-for-x86_64-baseos-rpms
-          override: enabled
-        - label: rhel-9-for-x86_64-appstream-rpms
           override: enabled
     # RHEL 8
     - name: rhel8-dev
@@ -279,6 +279,12 @@ satellite:
             product: "Red Hat Enterprise Linux for x86_64"
           - name: "Red Hat Enterprise Linux 9 for x86_64 - BaseOS RPMs 9.2"
             product: "Red Hat Enterprise Linux for x86_64"
+          - name: "Red Hat Enterprise Linux 9 for x86_64 - AppStream - Extended Update Support RPMs 9.2"
+            product: "Red Hat Enterprise Linux for x86_64 - Extended Update Support"
+          - name: "Red Hat Enterprise Linux 9 for x86_64 - BaseOS - Extended Update Support RPMs 9.2"
+            product: "Red Hat Enterprise Linux for x86_64 - Extended Update Support"
+          - name: "Red Hat Enterprise Linux 9 for x86_64 - High Availability - Extended Update Support RPMs 9.2"
+            product: "Red Hat Enterprise Linux High Availability for x86_64 - Extended Update Support"
     - name: rhel8
       repositories:
         yum:

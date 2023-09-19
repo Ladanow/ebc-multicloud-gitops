@@ -1,2 +1,0 @@
-satellite:
-  server_url: https://{{ satellite_fqdn}}/

@@ -5,7 +5,7 @@
 
 - name: Downloading katello agent from satellite on "{{ hostname }}
   dnf:
-    name: "http://{{ remote_satellite_fqdn }}/pub/katello-ca-consumer-latest.noarch.rpm"
+    name: "http://{{ satellite_fqdn }}/pub/katello-ca-consumer-latest.noarch.rpm"
     disable_gpg_check: True
     state: present
   become: true

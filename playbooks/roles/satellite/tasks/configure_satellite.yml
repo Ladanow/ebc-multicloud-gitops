@@ -33,21 +33,21 @@
   when: ( manifest.resources | length ) == 0
   tags:
     - manifest
-
-############################
-# Refresh manifest
-############################
-- name: Refresh manifest
-  theforeman.foreman.subscription_manifest:
-    username: "{{ satellite.admin_username }}"
-    password: "{{ satellite.admin_password }}"
-    server_url: "{{ satellite.server_url }}"
-    validate_certs: no
-    organization: "{{ satellite.organization }}"
-    state: refreshed
-  delegate_to: localhost
-  tags:
-    - manifest
+#
+#############################
+## Refresh manifest
+#############################
+#- name: Refresh manifest
+#  theforeman.foreman.subscription_manifest:
+#    username: "{{ satellite.admin_username }}"
+#    password: "{{ satellite.admin_password }}"
+#    server_url: "{{ satellite.server_url }}"
+#    validate_certs: no
+#    organization: "{{ satellite.organization }}"
+#    state: refreshed
+#  delegate_to: localhost
+#  tags:
+#    - manifest
 
 #########################
 # Create  products
@@ -296,11 +296,20 @@
         group: "{{ ansible_env.USER }}"
         mode: "0755"
 
-    - name: Update pool ID for OpenStack
+    - name: Update pool ID for OpenStack 16.2
       ansible.builtin.lineinfile:
         path: /tmp/dummy.yml
         state: present
-        regexp: 'osp_pool_id:'
+        regexp: 'osp16_pool_id:'
+        line: '        - pool_id: {{ item.cp_id }}'
+      when: '"OpenStack" in item.name'
+      loop: "{{ manifest.resources }}"
+
+    - name: Update pool ID for OpenStack 17.1
+      ansible.builtin.lineinfile:
+        path: /tmp/dummy.yml
+        state: present
+        regexp: 'osp17_pool_id:'
         line: '        - pool_id: {{ item.cp_id }}'
       when: '"OpenStack" in item.name'
       loop: "{{ manifest.resources }}"

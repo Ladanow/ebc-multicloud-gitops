@@ -1,5 +1,0 @@
-satellite:
-  hosts:
-    {{ satellite_fqdn }}:
-      ansible_host: {{ satellite_ip }}
-      ansible_ssh_user: admin

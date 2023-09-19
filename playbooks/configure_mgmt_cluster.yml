@@ -6,6 +6,7 @@
     - /home/mano/ebc-multicloud-gitops/playbooks/vars/common.yml
     - /home/mano/ebc-multicloud-gitops/playbooks/vars/secret.yml
     - /home/mano/ebc-multicloud-gitops/playbooks/vars/satellite.yml
+    - /home/mano/ebc-multicloud-gitops/playbooks/vars/idm-groups-users.yml
   tasks:
     - name: Deploy Kafka
       block:

@@ -1,8 +1,4 @@
 ---
 # vars file for idm
 
-idm_qcow: rhel-baseos-9.0-update-4-x86_64-kvm.qcow2
-idm_app_name: idm-server
-idm_domain: identity
-
 scripts_path: idm-scripts
