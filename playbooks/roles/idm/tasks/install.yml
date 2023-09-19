@@ -15,26 +15,26 @@
   become: true
   delegate_to: "{{ idm1_hostname }}.{{ domain }}"
   block:
-#    - name: Prepare VM to install IDM Server
-#      ansible.builtin.include_tasks: prepare_idm_vm.yml
-#      vars:
-#        hostname: "{{ idm1_hostname }}.{{ domain }}"
-#
-#    - name: Install IDM Server
-#      vars:
-#        ipaserver_domain: "{{ domain }}"
-#        ipaserver_realm: "{{ domain | upper }}"
-#        ipaserver_setup_dns: false
-#        ipaserver_auto_forwarders: false
-#        ipaadmin_principal: "{{ idm_user }}"
-#        ipaadmin_password: "{{ ipa_admin_password }}"
-#        ipadm_password: "{{ ipa_dir_mgr_pass }}"
-#      ansible.builtin.import_role:
-#        name: ipaserver
-#
-#    - name: Wait for 2 mins to IPA server to be ready
-#      ansible.builtin.pause:
-#        seconds: 120
+    - name: Prepare VM to install IDM Server
+      ansible.builtin.include_tasks: prepare_idm_vm.yml
+      vars:
+        hostname: "{{ idm1_hostname }}.{{ domain }}"
+
+    - name: Install IDM Server
+      vars:
+        ipaserver_domain: "{{ domain }}"
+        ipaserver_realm: "{{ domain | upper }}"
+        ipaserver_setup_dns: false
+        ipaserver_auto_forwarders: false
+        ipaadmin_principal: "{{ idm_user }}"
+        ipaadmin_password: "{{ ipa_admin_password }}"
+        ipadm_password: "{{ ipa_dir_mgr_pass }}"
+      ansible.builtin.import_role:
+        name: ipaserver
+
+    - name: Wait for 2 mins to IPA server to be ready
+      ansible.builtin.pause:
+        seconds: 120
 
     - name: Create IDM groups and users
       ansible.builtin.include_tasks: create_idm_users_groups.yml
