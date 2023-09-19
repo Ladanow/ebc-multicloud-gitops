@@ -21,7 +21,7 @@ spec:
         - class: ocs-storagecluster-ceph-rbd
           deleteClaim: true
           id: 0
-          size: '8Gi'
+          size: '50Gi'
           type: persistent-claim
       type: jbod
     listeners:
@@ -46,7 +46,7 @@ spec:
     storage:
       class: ocs-storagecluster-ceph-rbd
       deleteClaim: true
-      size: '4Gi'
+      size: '40Gi'
       type: persistent-claim
     replicas: 3
 
