@@ -62,12 +62,39 @@ clusterGroup:
       namespace: quay-enterprise    
         #channel: stable-3.7
 
+        #
+        # STF Operator
+        #
+    openshift-cert-manager:
+      name: openshift-cert-manager-operator
+      namespace: openshift-cert-manager-operator
+      channel: tech-preview
+
+    amq7-interconnect:
+      name: amq7-interconnect-operator
+      namespace: service-telemetry
+      channel: 1.10.x
+      
     prometheus:
       name: prometheus
       namespace: service-telemetry    
       channel: beta
       source: community-operators
  
+    elasticsearch-eck:
+      name: elasticsearch-eck-operator-certified
+      namespace: service-telemetry
+      channel: stable
+      source: certified-operators
+
+    service-telemetry:
+      name: service-telemetry-operator
+      namespace: service-telemetry
+      channel: stable-1.5
+
+        #
+        # End STF operators
+        #
     kafka:
       name: amq-streams
       namespace: kafka-cluster 
