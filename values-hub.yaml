@@ -18,6 +18,7 @@ clusterGroup:
   - quay-enterprise
   - policies  
   - service-telemetry
+  - openshift-cert-manager-operator
   - kafka-cluster 
     #  - openshift-operators-redhat
     #  - openshift-logging  
