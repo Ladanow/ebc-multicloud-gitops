@@ -3,6 +3,7 @@ kind: ClusterRoleBinding
 metadata:
   name: stf-admin-binding
   annotations:
+    argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-3"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
