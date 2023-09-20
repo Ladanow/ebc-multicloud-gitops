@@ -18,7 +18,7 @@ clusterGroup:
   - quay-enterprise
   - policies  
   - service-telemetry
-  - openshift-cert-manager-operator
+  #- openshift-cert-manager-operator
   - kafka-cluster 
     #  - openshift-operators-redhat
     #  - openshift-logging  
@@ -219,6 +219,12 @@ clusterGroup:
       name: logging
       namespace: openshift-logging
       path: charts/mgt-hub/logging
+      project: hub
+
+    cert-mgr:
+      name: cert-mgr
+      namespace: openshift-cert-manager-operator
+      path: charts/mgt-hub/cert-mgr
       project: hub
 
     stf:
