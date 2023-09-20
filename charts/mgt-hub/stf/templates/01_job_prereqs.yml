@@ -27,6 +27,15 @@ spec:
         - |
           echo "STF PreInstall Hook"
 
+          # Check OpenShift cert manager operator
+          CSV_NAME=$(oc get csv -n  openshift-cert-manager-operator | egrep cert-manager | awk '{print $1}')
+          CSV_STATUS="Pausing $SLEEP seconds..."
+          while [ "$CSV_STATUS" != "InstallSucceeded" ]; do
+            echo "Waiting for the cert mgr Operator to be ready. ($CSV_STATUS)"
+            sleep $SLEEP
+            CSV_STATUS=$( oc get csv -n openshift-cert-manager-operator $CSV_NAME -o jsonpath={..status.conditions[-1:]} | jq .| egrep reason | awk -F '"' '{print $4}' )
+          done
+
           # Check AMQ interconnect operator
           CSV_NAME=$(oc get csv -n  service-telemetry | egrep amq7-interconnect| awk '{print $1}')
           CSV_STATUS="Pausing $SLEEP seconds..."
