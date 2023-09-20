@@ -37,8 +37,8 @@ clusterGroup:
   - openshift-performance-addon-operator
   - ansible
 
-  operatorgroupExcludes:
-  - openshift-cert-manager-operator
+  #operatorgroupExcludes:
+  #- openshift-cert-manager-operator
 
   subscriptions:
     acm:
