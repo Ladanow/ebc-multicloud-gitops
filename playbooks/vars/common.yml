@@ -41,5 +41,5 @@ ipaserver: idm1mgmt1.npss.bos2.lab
 # GitLab
 
 git_hostname: git
-git_ip: 10.0.41.6
+git_ip: 10.0.41.42
 
