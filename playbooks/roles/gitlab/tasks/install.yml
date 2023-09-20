@@ -1,15 +1,4 @@
 ---
-- name: Include create_resource.yml
-  ansible.builtin.include_tasks: create_resource.yml
-  vars:
-    src: 01_git_vm.yml
-
-- name: Wait for ssh connection to be open on Git
-  ansible.builtin.wait_for:
-    port: 22
-    host: "{{ git_ip }}"
-    timeout: 600
-
 - name: Copy ssh id for Git  Replica VM
   ansible.builtin.command: sshpass -p "{{ git_password }}" ssh-copy-id -o StrictHostKeyChecking=no {{ git_user }}@{{ git_ip }}
   changed_when: true
