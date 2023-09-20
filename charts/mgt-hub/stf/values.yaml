@@ -2,7 +2,7 @@ mgmt_cluster_name: mgmt
 domain: npss.bos2.lab
 
 job:
-  image: registry.redhat.io/openshift4/ose-cli:latest
+  image: registry.redhat.io/openshift4/ose-tools-rhel8:latest
 
 prom_kafka:
   namespace: prom-kafka-adapter
