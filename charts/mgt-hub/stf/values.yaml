@@ -14,5 +14,5 @@ stf:
   clouds1:
     - name: cwl-site1
 
-cert-mgr:
+cert_mgr:
   namespace: openshift-cert-manager-operator
