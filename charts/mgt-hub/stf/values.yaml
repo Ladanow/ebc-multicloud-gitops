@@ -1,0 +1,15 @@
+mgmt_cluster_name: mgmt
+domain: npss.bos2.lab
+
+job:
+  image: registry.redhat.io/openshift4/ose-cli:latest
+
+prom_kafka:
+  namespace: prom-kafka-adapter
+  image: telefonica/prometheus-kafka-adapter:1.8.0
+  kafka_route: mgnt-kafka-kafka-bootstrap-kafka-cluster.apps
+
+stf:
+  namespace: service-telemetry
+  clouds1:
+    - name: cwl-site1

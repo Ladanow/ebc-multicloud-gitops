@@ -1,0 +1,25 @@
+#
+# Create route that will be used by OpenStack rsyslog to send logs to ES
+#
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: elastic-service-telemetry
+  namespace: {{ .Values.stf.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "40"
+  labels:
+    common.k8s.elastic.co/type: elasticsearch
+    elasticsearch.k8s.elastic.co/cluster-name: elasticsearch
+spec:
+  host: elastic-service-telemetry.apps.{{ .Values.mgmt_cluster_name }}.{{ .Values.domain }}
+  to:
+    kind: Service
+    name: elasticsearch-es-http
+    weight: 100
+  port:
+    targetPort: https
+  tls:
+    termination: passthrough
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None

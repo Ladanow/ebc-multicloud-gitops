@@ -37,6 +37,9 @@ clusterGroup:
   - openshift-performance-addon-operator
   - ansible
 
+  operatorgroupExcludes:
+  - openshift-cert-manager-operator
+
   subscriptions:
     acm:
       name: advanced-cluster-management
@@ -158,9 +161,6 @@ clusterGroup:
       path: charts/mgt-hub/nmstate  
       project: hub
 
-
-
-
             #    vault:
             #      name: vault
             #      namespace: vault
@@ -191,8 +191,6 @@ clusterGroup:
       path: charts/mgt-hub/lso
       project: hub  
 
-
-
     quay:
       name: quay
       namespace: quay-enterprise
@@ -210,6 +208,7 @@ clusterGroup:
       namespace: prom-kafka-adapter
       path: charts/mgt-hub/monitoring
       project: hub  
+
     gitops:
       name: gitops
       namespace: npss-gitops
@@ -220,6 +219,12 @@ clusterGroup:
       name: logging
       namespace: openshift-logging
       path: charts/mgt-hub/logging
+      project: hub
+
+    stf:
+      name: stf
+      namespace: service-telemetry
+      path: charts/mgt-hub/stf
       project: hub
   
     edge-gitops-vms:
@@ -233,6 +238,7 @@ clusterGroup:
             #      path: charts/mgt-hub/mc  
             #      project: hub
             #
+
     ansible:
       name: ansible
       path: charts/mgt-hub/ansible
