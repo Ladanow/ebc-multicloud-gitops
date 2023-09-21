@@ -7,7 +7,6 @@ clusterGroup:
 
   namespaces:
   - open-cluster-management #for ACM
-  - hello-world  
   - openshift-nmstate  
   - vault
   - golang-external-secrets
@@ -17,8 +16,6 @@ clusterGroup:
   - openshift-cnv
   - quay-enterprise
   - policies  
-  - service-telemetry
-  #- openshift-cert-manager-operator
   - kafka-cluster 
   - openshift-logging:
       annotations:
@@ -32,12 +29,15 @@ clusterGroup:
       labels:
         openshift.io/cluster-monitoring: "true"
         argocd.argoproj.io/managed-by: "ebc-multicloud-gitops-hub"
+  # STF Namespace:  
+  - service-telemetry
+  #- openshift-cert-manager-operator
+  # End of STF related namespaces
   - prom-kafka-adapter 
   - edge-gitops-vms
   - mano-apps
   - mgmt-apps  
   - mano-automation
-    #  - openshift-logging  
   - openshift-performance-addon-operator
   - ansible
 
@@ -111,14 +111,11 @@ clusterGroup:
       name: elasticsearch-operator
       namespace: openshift-operators-redhat
 
-        #    logging:
-        #      name: cluster-logging
-        #      namespace: openshift-logging
+#   logging:
+    #   
+    #    Logging operator being installed using charts due to limitation in settting target namespace via values-hub 
+    #   
    
-    pao:
-      name: performance-addon-operator
-      namespace: openshift-performance-addon-operator    
-
     talam:
       name: topology-aware-lifecycle-manager
       namespace: openshift-operators 
@@ -129,17 +126,8 @@ clusterGroup:
       source: redhat-operators
       channel: stable-2.3
 
-#     disable: true
-
-#    kubevirt-hyperconverged:
-#      name: kubevirt-hyperconverged
-#      namespace: openshift-cnv
-#      source: redhat-operators
-#      channel: stable
-
   projects:
   - hub
-  - hello-world
 
   applications:
     acm:
@@ -152,31 +140,12 @@ clusterGroup:
         kind: ManagedClusterInfo
         jsonPointers:
           - /spec/loggingCA
-
-            #    hello-world:
-            #      name: hello-world
-            #      namespace: hello-world
-            #      project: hello-world
-            #      path: charts/all/hello-world
-
     nmstate:
       name: nmstate-crd
       namespace: openshift-nmstate
       path: charts/mgt-hub/nmstate  
       project: hub
 
-            #    vault:
-            #      name: vault
-            #      namespace: vault
-            #      project: hub
-            #      path: common/hashicorp-vault
-            #
-            #    golang-external-secrets:
-            #      name: golang-external-secrets
-            #      namespace: golang-external-secrets
-            #      project: hub
-            #      path: common/golang-external-secrets
-            #
     cnv:
       name: kubevirt-hyperconverged
       namespace: openshift-cnv
@@ -242,143 +211,24 @@ clusterGroup:
       namespace: mgmt-apps 
       project: hub
       path: charts/mgt-hub/vm-on-bm
-            #
-            #    mc:    
-            #      name: mc
-            #      path: charts/mgt-hub/mc  
-            #      project: hub
-            #
 
     ansible:
       name: ansible
       path: charts/mgt-hub/ansible
       project: hub
-            #
-            #
-            #
-
-
-  imperative:
-    # NOTE: We *must* use lists and not hashes. As hashes lose ordering once parsed by helm
-    # The default schedule is every 10 minutes: imperative.schedule
-    # Total timeout of all jobs is 1h: imperative.activeDeadlineSeconds
-    # imagePullPolicy is set to always: imperative.imagePullPolicy
-    # For additional overrides that apply to the jobs, please refer to
-    # https://hybrid-cloud-patterns.io/imperative-actions/#additional-job-customizations
-    jobs:
-    - name: regional-ca
-      # ansible playbook to be run
-      playbook: ansible/playbooks/on-hub-get-regional-ca.yml
-      # per playbook timeout in seconds
-      timeout: 234
-      # verbosity: "-v"
-    - name: deploy-kubevirt-worker
-      playbook: ansible/deploy_kubevirt_worker.yml
-      verbosity: -vvv
-    - name: configure-aap-controller
-      playbook: ansible/imperative_configure_controller.yml
-      image: quay.io/hybridcloudpatterns/ansible-edge-gitops-ee:latest
-      verbosity: -vvv
-      timeout: "900"
-    clusterRoleYaml:
-    - apiGroups:
-        - "*"
-      resources:
-        - machinesets
-      verbs:
-        - "*"
-    - apiGroups:
-        - "*"
-      resources:
-        - "*"
-      verbs:
-        - get
-        - list
-        - watch
-
-  managedClusterGroups:
-    exampleRegion:
-      name: group-one
-      labels:
-      - name: clusterGroup
-        value: group-one
-      helmOverrides:
-      - name: clusterGroup.isHubCluster
-        value: false
-
-      # Before enabling cluster provisioning, ensure AWS and/or Azure
-      #   credentials and OCP pull secrets are defined in Vault.
-      #   See values-secret.yaml.template
-      #
-      #clusterPools:
-      #  exampleAWSPool:
-      #    name: aws-ap
-      #    openshiftVersion: 4.10.18
-      #    baseDomain: blueprints.rhecoeng.com
-      #    platform:
-      #      aws:
-      #        region: ap-southeast-2
-      #    clusters:
-      #    - One
-      #
-      #  exampleAzurePool:
-      #    name: azure-us
-      #    openshiftVersion: 4.10.18
-      #    baseDomain: blueprints.rhecoeng.com
-      #    platform:
-      #      azure:
-      #        baseDomainResourceGroupName: dojo-dns-zones
-      #        region: eastus
-      #    clusters:
-      #    - Two
-      #    - Three
-
-#  To have apps in multiple flavors, use namespaces and use helm overrides as appropriate
+##### Following are not being used
+#  imperative:
+#    jobs:
 #
-#    pipelines:
-#      name: pipelines
-#      namespace: production
-#      project: datacenter
-#      path: applications/pipeline
-#      repoURL: https://github.com/you/applications.git
-#      targetRevision: stable
-#      overrides:
-#      - name: myparam
-#        value: myparam
-#
-#    pipelines_staging:
-#    - name: pipelines
-#      namespace: staging
-#      project: datacenter
-#      path: applications/pipeline
-#      repoURL: https://github.com/you/applications.git
-#      targetRevision: main
-#
-#   Additional applications
-#   Be sure to include additional resources your apps will require
-#   +X machines
-#   +Y RAM
-#   +Z CPU
-#    vendor-app:
-#      name: vendor-app
-#      namespace: default
-#      project: vendor
-#      path: path/to/myapp
-#      repoURL: https://github.com/vendor/applications.git
-#      targetRevision: main
-
-#  managedSites:
-#    factory:
-#      name: factory
-#      # repoURL: https://github.com/dagger-refuse-cool/manuela-factory.git
-#      targetRevision: main
-#      path: applications/factory
+#    - name: regional-ca
+#      playbook: ansible/playbooks/on-hub-get-regional-ca.yml
+#  managedClusterGroups:
+#    exampleRegion:
+#      name: group-one
+#      labels:
+#      - name: clusterGroup
+#        value: group-one
 #      helmOverrides:
-#      - name: site.isHubCluster
+#      - name: clusterGroup.isHubCluster
 #        value: false
-#      clusterSelector:
-#        matchExpressions:
-#        - key: vendor
-#          operator: In
-#          values:
-#            - OpenShift
+
