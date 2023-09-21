@@ -20,8 +20,12 @@ clusterGroup:
   - service-telemetry
   #- openshift-cert-manager-operator
   - kafka-cluster 
-    #  - openshift-operators-redhat
-    #  - openshift-logging  
+  - openshift-logging:
+      annotations:
+        openshift.io/node-selector: ""
+      labels:
+        openshift.io/cluster-monitoring: "true"
+        argocd.argoproj.io/managed-by: "ebc-multicloud-gitops-hub"
   - openshift-operators-redhat:
       annotations:
         openshift.io/node-selector: ""
