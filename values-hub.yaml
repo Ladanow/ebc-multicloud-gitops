@@ -35,14 +35,8 @@ clusterGroup:
   # End of STF related namespaces
   - prom-kafka-adapter 
   - edge-gitops-vms
-  - mano-apps
   - mgmt-apps  
-  - mano-automation
-  - openshift-performance-addon-operator
   - ansible
-
-  #operatorgroupExcludes:
-  #- openshift-cert-manager-operator
 
   subscriptions:
     acm:
