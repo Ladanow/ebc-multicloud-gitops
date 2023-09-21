@@ -6,23 +6,20 @@ clusterGroup:
   isHubCluster: true
 
   namespaces:
-  - open-cluster-management #for ACM
-  - openshift-nmstate  
-  - vault
-  - golang-external-secrets
-  - npss-tnc-vms
-  - openshift-local-storage
-  - openshift-storage  
-  - openshift-cnv
-  - quay-enterprise
+  - open-cluster-management             #for ACM
+  - openshift-nmstate                   #for NMstate
+  - openshift-local-storage             #for LSO
+  - openshift-storage                   #for ODF
+  - openshift-cnv                       #for CNF
+  - quay-enterprise                     #for quay
   - policies  
-  - kafka-cluster 
-  - openshift-logging:
-      annotations:
-        openshift.io/node-selector: ""
-      labels:
-        openshift.io/cluster-monitoring: "true"
-        argocd.argoproj.io/managed-by: "ebc-multicloud-gitops-hub"
+  - kafka-cluster                       #for Kafka 
+    #  - openshift-logging:
+    #      annotations:
+    #        openshift.io/node-selector: ""
+    #      labels:
+    #        openshift.io/cluster-monitoring: "true"
+    #        argocd.argoproj.io/managed-by: "ebc-multicloud-gitops-hub"
   - openshift-operators-redhat:
       annotations:
         openshift.io/node-selector: ""
