@@ -9,17 +9,17 @@
 #    argocd.argoproj.io/managed-by: ebc-multicloud-gitops-hub 
 #
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: openshift-logging
-  annotations:
-    openshift.io/node-selector: ""
-    argocd.argoproj.io/sync-wave: "-20"  
-  labels:
-    openshift.io/cluster-monitoring: "true"
-    argocd.argoproj.io/managed-by: ebc-multicloud-gitops-hub 
-
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: openshift-logging
+#  annotations:
+#    openshift.io/node-selector: ""
+#    argocd.argoproj.io/sync-wave: "-20"  
+#  labels:
+#    openshift.io/cluster-monitoring: "true"
+#    argocd.argoproj.io/managed-by: ebc-multicloud-gitops-hub 
+#
 
 #---
 ##apiVersion: operators.coreos.com/v1
