@@ -107,6 +107,7 @@ clusterGroup:
       name: cluster-logging
       channel: stable-5.7  
       source: redhat-operators
+      csv: cluster-logging.v5.7.6  
     #   
     #    Logging operator being installed using charts due to limitation in settting target namespace via values-hub 
     #   
