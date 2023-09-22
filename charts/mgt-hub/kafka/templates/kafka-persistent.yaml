@@ -9,6 +9,7 @@ metadata:
 spec:
   kafka:
     config:
+      auto.create.topics.enable: false
       default.replication.factor: 3
       inter.broker.protocol.version: '3.3'
       message.max.bytes: 369295618
