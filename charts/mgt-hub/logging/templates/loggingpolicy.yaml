@@ -53,7 +53,7 @@ spec:
   name: cluster-logging
   source: "redhat-operators"
   sourceNamespace: "openshift-marketplace"
-
+  channel: "stable"
 ---
 #apiVersion: "logging.openshift.io/v1"
 #kind: "ClusterLogging"
