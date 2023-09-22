@@ -106,7 +106,7 @@ clusterGroup:
       namespace: openshift-logging
       name: cluster-logging
       channel: stable  
-
+      source: redhat-operators
     #   
     #    Logging operator being installed using charts due to limitation in settting target namespace via values-hub 
     #   
