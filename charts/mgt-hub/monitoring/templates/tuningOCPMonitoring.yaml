@@ -9,7 +9,7 @@ data:
     enableUserWorkload: true
     prometheusK8s:
       remoteWrite:
-        - url: "http://172.30.164.191:8080/receive"
+        - url: "http://prometheus-kafka-adapter.prom-kafka-adapter.svc.cluster.local:8080/receive"
       # Keep data stored for 1 days
       retention: 1d
       volumeClaimTemplate:
@@ -17,7 +17,7 @@ data:
           storageClassName: ocs-storagecluster-ceph-rbd
           resources:
             requests:
-              storage: 5Gi
+              storage: 20Gi
     alertmanagerMain:
       retention: 1d
       volumeClaimTemplate:
@@ -25,7 +25,7 @@ data:
           storageClassName: ocs-storagecluster-ceph-rbd
           resources:
             requests:
-              storage: 5Gi
+              storage: 20Gi
 
 
 

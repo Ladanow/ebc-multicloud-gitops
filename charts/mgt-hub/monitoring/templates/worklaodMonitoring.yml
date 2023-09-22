@@ -16,7 +16,7 @@ data:
           storageClassName: ocs-storagecluster-ceph-rbd
           resources:
             requests:
-              storage: 5Gi
+              storage: 20Gi
       enforcedSampleLimit: 50000
     thanosRuler:
       retention: 1d
@@ -25,6 +25,6 @@ data:
           storageClassName: ocs-storagecluster-ceph-rbd
           resources:
             requests:
-              storage: 5Gi
+              storage: 20Gi
 
 
