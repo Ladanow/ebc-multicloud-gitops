@@ -9,5 +9,5 @@ spec:
   managementState: "Managed"
   collection:
     logs:
-      type: "fluentd"
+      type: "vector"
       fluentd: {}
