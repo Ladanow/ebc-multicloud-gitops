@@ -8,9 +8,7 @@ metadata:
   name: {{ .name }}
   namespace: kafka-cluster
   annotations:
-    argocd.argoproj.io/hook: Sync
     argocd.argoproj.io/sync-wave: "3"
-spec:
   config:
     retention.ms: 60000
     retention.bytes: 200000000  
