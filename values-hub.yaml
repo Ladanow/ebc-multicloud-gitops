@@ -179,11 +179,11 @@ clusterGroup:
       path: charts/mgt-hub/gitops
       project: hub
 
-    logging:
-      name: logging
-      namespace: openshift-logging
-      path: charts/mgt-hub/logging
-      project: hub
+        #    logging:
+        #      name: logging
+        #      namespace: openshift-logging
+        #      path: charts/mgt-hub/logging
+        #      project: hub
 
     cert-mgr:
       name: cert-mgr
