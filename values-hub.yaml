@@ -102,7 +102,11 @@ clusterGroup:
       name: elasticsearch-operator
       namespace: openshift-operators-redhat
 
-#   logging:
+    logging:
+      namespace: openshift-logging
+      name: cluster-logging
+      channel: stable  
+
     #   
     #    Logging operator being installed using charts due to limitation in settting target namespace via values-hub 
     #   
