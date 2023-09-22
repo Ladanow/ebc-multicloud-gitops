@@ -14,12 +14,12 @@ clusterGroup:
   - quay-enterprise                     #for quay
   - policies  
   - kafka-cluster                       #for Kafka 
-    #  - openshift-logging:
-    #      annotations:
-    #        openshift.io/node-selector: ""
-    #      labels:
-    #        openshift.io/cluster-monitoring: "true"
-    #        argocd.argoproj.io/managed-by: "ebc-multicloud-gitops-hub"
+  - openshift-logging:
+      annotations:
+        openshift.io/node-selector: ""
+      labels:
+        openshift.io/cluster-monitoring: "true"
+        argocd.argoproj.io/managed-by: "ebc-multicloud-gitops-hub"
   - openshift-operators-redhat:
       annotations:
         openshift.io/node-selector: ""
