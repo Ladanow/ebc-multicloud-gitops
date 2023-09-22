@@ -30,10 +30,10 @@ clusterGroup:
   - service-telemetry
   #- openshift-cert-manager-operator
   # End of STF related namespaces
-  - prom-kafka-adapter 
+  - prom-kafka-adapter                #for prometheus adapter
   - edge-gitops-vms
-  - mgmt-apps  
-  - ansible
+  - mgmt-apps                         #for applications
+  - ansible                           #for ansible
 
   subscriptions:
     acm:
