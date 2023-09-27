@@ -11,8 +11,8 @@ metadata:
     argocd.argoproj.io/sync-wave: "3"
 spec:
   config:
-    retention.ms: 60000
-    retention.bytes: '200000000'
+    retention.ms: 180000
+    #retention.bytes: '200000000'
   partitions: 1
   replicas: 1
   topicName: {{ .name }}
