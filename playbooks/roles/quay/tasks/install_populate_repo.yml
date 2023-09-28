@@ -1,0 +1,6 @@
+- name: Install_Quay
+  become: true    
+  block:
+    - name: Include populate_repo.yml
+      ansible.builtin.include_tasks: populate_repo.yml
+

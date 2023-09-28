@@ -38,6 +38,12 @@ ipaserver: idm1mgmt1.npss.bos2.lab
 #remote_quay_fqdn: quay.mgmt2.tmeprj2.comm.red.ibm.gsc
 #remote_quay_cert_dir: /home/mano2/dallas20/mgmt-config.ali/quay-certs
 
+quay_hostname: quay-registry-quay-quay-enterprise.apps.mgmt.npss.bos2.lab
+quay_user: quay
+quay_passwd: registry  
+
+
+
 # GitLab
 
 git_hostname: git
