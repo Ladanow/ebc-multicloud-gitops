@@ -126,6 +126,11 @@ clusterGroup:
   - hub
 
   applications:
+    perf-profile:
+      name: perf-profile
+      project: hub
+      path: charts/mgt-hub/perf-profile
+
     acm:
       name: acm
       namespace: open-cluster-management
