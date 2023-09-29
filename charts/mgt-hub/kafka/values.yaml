@@ -23,3 +23,4 @@ kafka:
     - name: cwl-site2-infra-logs
     - name: cwl-site2-app-logs
     - name: cwl-site2-audit-logs
+    - name: stf-metrics
