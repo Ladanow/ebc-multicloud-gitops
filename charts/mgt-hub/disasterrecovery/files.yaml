@@ -1,0 +1,56 @@
+apiVersion: v1
+data:
+  cloud: W2RlZmF1bHRdCmF3c19hY2Nlc3Nfa2V5X2lkPW1pbmlvCmF3c19zZWNyZXRfYWNjZXNzX2tleT1taW5pb3JlZGhhdAo=
+kind: Secret
+metadata:
+  name: cloud-credentials
+  namespace: open-cluster-management-backup
+type: Opaque
+---
+apiVersion: oadp.openshift.io/v1alpha1
+kind: DataProtectionApplication
+metadata:
+  name: oadp-minio
+  namespace: open-cluster-management-backup
+spec:
+  backupLocations:
+    - velero:
+        config:
+          profile: default
+          region: minio
+          s3ForcePathStyle: 'true'
+          s3Url: 'http://minio-disk.apps.mgmt2.npss.bos2.lab'
+          insecureSkipTLSVerify: "false"
+        credential:
+          key: cloud
+          name: cloud-credentials
+        default: true
+        objectStorage:
+          bucket: mgmt1-acm 
+          prefix: velero
+        provider: aws
+  configuration:
+    restic:
+      enable: true
+    velero:
+      defaultPlugins:
+        - openshift
+        - aws
+        - kubevirt
+  snapshotLocations:
+    - velero:
+        config:
+          profile: default
+          region: minio
+        provider: aws
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: BackupSchedule
+metadata:
+  name: schedule-acm
+  namespace: open-cluster-management-backup
+spec:
+  maxBackups: 3                 # Maximum number of backups after which old backups should be removed
+  veleroSchedule: 0 */1 * * *   # Create a backup every 6 hours
+  veleroTtl: 72h                # Deletes scheduled backups after 72h
+

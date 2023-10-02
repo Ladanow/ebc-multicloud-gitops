@@ -1,6 +1,7 @@
-- name: Install_Quay
-  become: true    
-  block:
-    - name: Include populate_repo.yml
+- name: quay repo
+  hosts: localhost
+  vars_files:
+    - /home/mano/ebc-multicloud-gitops/playbooks/vars/common.yml    
+  tasks: 
+    - name: Include populate
       ansible.builtin.include_tasks: populate_repo.yml
-

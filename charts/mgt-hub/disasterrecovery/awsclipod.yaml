@@ -1,0 +1,43 @@
+#apiVersion: v1
+#data:
+#  config: |
+#    [default]
+#    region = us-east-1
+#    output = json
+#  credentials: |
+#    [default]
+#    aws_access_key_id=minio
+#    aws_secret_access_key=minioredhat
+#kind: ConfigMap
+#metadata:
+#  creationTimestamp: null
+#  name: awsfiles
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: awscli
+  name: awscli
+spec:
+  containers:
+  - image: amazon/aws-cli
+    args:
+      # - -endpoint-url http://minio-disk.apps.mgmt2.npss.bos2.lab
+    - s3
+    - ls
+    name: awscli
+    volumeMounts:
+      - name: awsconfig
+        mountPath: ~/.aws
+    restartPolicy: Never
+  volumes:
+    - name: awsconfig
+      configMap:
+        name: awsfiles
+        items: 
+          - key: config
+            path: config
+          - key: credentials
+            path: credentials

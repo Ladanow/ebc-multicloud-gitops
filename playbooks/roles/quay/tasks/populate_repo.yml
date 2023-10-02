@@ -5,15 +5,15 @@
     echo "Checking for config map for ImageSource..."
     while [ $(oc get cm -n quay-enterprise imageset | wc -l) != "2" ]; do echo "watiting for 5 seconds.."; sleep 5; done
     cd /home/mano/oc-mirror
-    oc extract configmap/imageset
+    oc extract configmap/imageset --confirm
 
 - name: Export quay certificate and import to Bastion
   ansible.builtin.shell: |
-    oc extract configmap/kube-root-ca.crt
-    cp ca.crt /etc/pki/ca-trust/source/
-    cp ca.crt /etc/pki/ca-trust/source/anchors
-    cp ca.crt /etc/pki/ca-trust/source/whitelist
-    update-ca-trust
+    sudo oc extract configmap/kube-root-ca.crt --confirm
+    sudo cp ca.crt /etc/pki/ca-trust/source/
+    sudo cp ca.crt /etc/pki/ca-trust/source/anchors
+    sudo cp ca.crt /etc/pki/ca-trust/source/whitelist
+    sudo update-ca-trust
 
 - name: Extract pull secret
   ansible.builtin.shell: |
@@ -41,7 +41,8 @@
 
 
 - name: Mirroring
+  ignore_errors: true
   ansible.builtin.shell: |
     echo "Mirroring..."
     cd /home/mano/oc-mirror
-    oc-mirror --config=./ImageSetConfiguration.yaml docker://{{ quay_hostname }}/ocp/ocp4
+    oc-mirror --config=./imagesetconfiguration.yml docker://{{ quay_hostname }}/ocp/ocp4
