@@ -7,6 +7,18 @@ spec:
     node-role.kubernetes.io/worker: ''
   desiredState:
     interfaces:
+    - name: bond0.410
+      type: vlan
+      state: up
+      vlan:
+        base-iface: bond0
+        id: 410
+      ipv4:
+        enabled: true
+        dhcp: false
+      ipv6:
+        enabled: true
+        dhcp: false
     - name: br-apps2
       type: linux-bridge
       state: up
