@@ -14,10 +14,10 @@ spec:
         base-iface: bond0
         id: 410
       ipv4:
-        enabled: true
+        enabled: false
         dhcp: false
       ipv6:
-        enabled: true
+        enabled: false
         dhcp: false
     - name: br-apps2
       type: linux-bridge
