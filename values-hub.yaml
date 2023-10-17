@@ -66,8 +66,8 @@ clusterGroup:
         #
     openshift-cert-manager:
       name: openshift-cert-manager-operator
-      namespace: openshift-cert-manager-operator
-      channel: tech-preview
+      namespace: cert-manager-operator
+      channel: stable-v1
 
     amq7-interconnect:
       name: amq7-interconnect-operator
