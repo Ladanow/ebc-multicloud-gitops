@@ -28,7 +28,7 @@ clusterGroup:
         argocd.argoproj.io/managed-by: "ebc-multicloud-gitops-hub"
   # STF Namespace:  
   - service-telemetry
-  #- openshift-cert-manager-operator
+  - cert-manager-operator
   # End of STF related namespaces
   - prom-kafka-adapter                #for prometheus adapter
   - edge-gitops-vms
@@ -195,11 +195,11 @@ clusterGroup:
       path: charts/mgt-hub/logging
       project: hub
 
-    cert-mgr:
-      name: cert-mgr
-      namespace: openshift-cert-manager-operator
-      path: charts/mgt-hub/cert-mgr
-      project: hub
+    #cert-mgr:
+    #  name: cert-mgr
+    #  namespace: openshift-cert-manager-operator
+    #  path: charts/mgt-hub/cert-mgr
+    #  project: hub
 
     stf:
       name: stf
