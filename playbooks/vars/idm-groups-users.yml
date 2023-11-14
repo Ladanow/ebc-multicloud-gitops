@@ -46,6 +46,11 @@ idm_system_users:
     sn: User
     password: 'vriESYGoV02AIsXoCZjhdw==' # openssl rand -base64 16
     state: present
+  - name: quay
+    givenname: Quay
+    sn: Reg
+    password: 'registry' # openssl rand -base64 16
+    state: present
   - name: ansible-bind-user
     givenname: Ansible
     sn: User

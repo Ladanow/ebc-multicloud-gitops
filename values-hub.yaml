@@ -34,6 +34,7 @@ clusterGroup:
   - edge-gitops-vms
   - mgmt-apps                         #for applications
   - ansible                           #for ansible
+  - security 
 
   subscriptions:
     acm:
@@ -121,6 +122,13 @@ clusterGroup:
       namespace: ansible 
       source: redhat-operators
       channel: stable-2.3
+
+    rhacs-operator:
+      name: rhacs-operator
+      namespace: security
+      source: redhat-operators
+      channel: rhacs-4.2
+      csv: rhacs-operator.v4.2.2     
 
   projects:
   - hub
