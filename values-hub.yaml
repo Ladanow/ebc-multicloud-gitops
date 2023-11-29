@@ -35,8 +35,8 @@ clusterGroup:
   - mgmt-apps                         #for applications
   - ansible                           #for ansible
   - security                          #ACS
-    operatorGroup: true
-     targetNamespaces:
+      operatorGroup: true
+      targetNamespaces:
 
   subscriptions:
     acm:
