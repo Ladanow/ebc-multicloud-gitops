@@ -129,8 +129,8 @@ clusterGroup:
       name: rhacs-operator
       namespace: security
       source: redhat-operators
-      channel: rhacs-4.2
-      csv: rhacs-operator.v4.2.2     
+      channel: rhacs-4.3
+      csv: rhacs-operator.v4.3.0  
 
   projects:
   - hub
