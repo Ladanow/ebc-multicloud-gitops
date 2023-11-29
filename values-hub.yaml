@@ -34,7 +34,7 @@ clusterGroup:
   - edge-gitops-vms
   - mgmt-apps                         #for applications
   - ansible                           #for ansible
-  - security                          #ACS
+  - security:                         #ACS
       operatorGroup: true
       targetNamespaces:
 
