@@ -37,7 +37,7 @@ clusterGroup:
   - security:                         #ACS
       operatorGroup: true
       targetNamespaces:
-  - rhacs-central 
+  - stackrox
 
   subscriptions:
     acm:
