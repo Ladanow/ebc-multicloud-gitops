@@ -206,6 +206,13 @@ clusterGroup:
       path: charts/mgt-hub/logging
       project: hub
 
+    security:
+      name: security
+      namespace: rhacs-operator
+      path: charts/mgt-hub/rhacs-central
+      project: hub  
+
+
     #cert-mgr:
     #  name: cert-mgr
     #  namespace: openshift-cert-manager-operator
